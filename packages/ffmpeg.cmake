@@ -8,7 +8,7 @@ ExternalProject_Add(ffmpeg
         lcms2
         openssl
         libssh
-        libsrt
+        # libsrt
         libass
         libbluray
         # libdvdnav
@@ -47,9 +47,9 @@ ExternalProject_Add(ffmpeg
         libva
         openal-soft
     GIT_REPOSITORY https://github.com/FFmpeg/FFmpeg.git
-    GIT_TAG "n7.1.2"
+    GIT_TAG n7.1.2
     SOURCE_DIR ${SOURCE_LOCATION}
-    GIT_CLONE_FLAGS "--sparse --filter=tree:0"
+    GIT_CLONE_FLAGS "--sparse"
     GIT_CLONE_POST_COMMAND "sparse-checkout set --no-cone /* !tests/ref/fate"
     PATCH_COMMAND ${EXEC} git apply ${CMAKE_CURRENT_SOURCE_DIR}/ffmpeg-*.patch
     UPDATE_COMMAND ""
@@ -61,9 +61,10 @@ ExternalProject_Add(ffmpeg
         --pkg-config-flags=--static
         --enable-cross-compile
 
-        --disable-gpl # --enable-gpl
-        --disable-nonfree
-        --disable-version3
+        --enable-gpl # --enable-gpl
+        --enable-nonfree
+        --enable-version3
+
         --disable-debug
         --disable-shared
         --enable-static
@@ -84,7 +85,7 @@ ExternalProject_Add(ffmpeg
         --disable-linux-perf
         
         # program
-        --disable-ffplay
+        --disable-programs
         --enable-ffmpeg
         --enable-ffprobe
 
@@ -99,7 +100,7 @@ ExternalProject_Add(ffmpeg
         --enable-network
         --enable-amf
         --enable-dxva2
-        --enable-libmfx
+        --disable-libmfx
         --enable-libuavs3d
         --enable-d3d11va
         --enable-openal
@@ -130,12 +131,12 @@ ExternalProject_Add(ffmpeg
         --enable-protocol=http
         --enable-protocol=httpproxy
         --enable-protocol=https
-        --enable-protocol=libsrt
         --enable-protocol=subfile
         --enable-protocol=tcp
         --enable-protocol=tls
         --enable-protocol=udp
         --enable-protocol=libssh
+        --disable-protocol=libsrt
 
         # 启用图片相关的封装器
         --disable-muxers
@@ -150,15 +151,58 @@ ExternalProject_Add(ffmpeg
         --enable-muxer=webp
 
         --enable-demuxers
+        --disable-demuxer=vobsub
+        --disable-demuxer=dvbsub
+        --disable-demuxer=dvbtxt
+        --disable-demuxer=mpl2
+        --disable-demuxer=aqtitle
+        --disable-demuxer=jacosub
+        --disable-demuxer=realtext
+        --disable-demuxer=tedcaptions
+        --disable-demuxer=stl
+        --disable-demuxer=ace
+        --disable-demuxer=gxf
+        --disable-demuxer=live_flv
+        --disable-demuxer=lxf
+        --disable-demuxer=microdvd
+        --disable-demuxer=rtp
+        --disable-demuxer=rtsp
 
         --enable-decoders
         --disable-decoder=libaom_av1
+        --disable-decoder=aac_mediacodec
+        --disable-decoder=amrnb_mediacodec
+        --disable-decoder=amrwb_mediacodec
+        --disable-decoder=h264_mediacodec
+        --disable-decoder=hevc_mediacodec
+        --disable-decoder=mp3_mediacodec
+        --disable-decoder=opus_mediacodec
+        --disable-decoder=vorbis_mediacodec
+        --disable-decoder=mpeg2_mmal
+        --disable-decoder=h264_mmal
+        --disable-decoder=vp8_mmal
+        --disable-decoder=h263_v4l2m2m
+        --disable-decoder=h264_v4l2m2m
+        --disable-decoder=hevc_v4l2m2m
+        --disable-decoder=mpeg1_v4l2m2m
+        --disable-decoder=vc1_v4l2m2m
+        --disable-decoder=mpeg2_v4l2m2m
+        --disable-decoder=mpeg4_v4l2m2m
+        --disable-decoder=vp8_v4l2m2m
+        --disable-decoder=vp9_v4l2m2m
+        --disable-decoder=dvbsub
+        --disable-decoder=dvdsub
+        --disable-decoder=jacosub
+        --disable-decoder=realtext
+        --disable-decoder=stl
+        --disable-decoder=microdvd
+        --disable-decoder=mpl2
 
         --disable-encoders
         --enable-encoder=mjpeg
-        --enable-encoder=ljpeg
-        --enable-encoder=jpegls
-        --enable-encoder=jpeg2000
+        --disable-encoder=ljpeg
+        --disable-encoder=jpegls
+        --disable-encoder=jpeg2000
         --enable-encoder=png
         --enable-encoder=bmp
         --enable-encoder=gif
@@ -166,15 +210,15 @@ ExternalProject_Add(ffmpeg
         --enable-encoder=tiff
         --enable-encoder=libwebp
         --enable-encoder=libwebp_anim
-        --enable-encoder=ppm
-        --enable-encoder=pgm
-        --enable-encoder=pcx
-        --enable-encoder=sgi
-        --enable-encoder=sunrast
-        --enable-encoder=targa
+        --disable-encoder=ppm
+        --disable-encoder=pgm
+        --disable-encoder=pcx
+        --disable-encoder=sgi
+        --disable-encoder=sunrast
+        --disable-encoder=targa
         --enable-encoder=wbmp
-        --enable-encoder=xbm
-        --enable-encoder=xwd
+        --disable-encoder=xbm
+        --disable-encoder=xwd
 
         --enable-parsers
 
@@ -182,20 +226,20 @@ ExternalProject_Add(ffmpeg
 
         --enable-filter=thumbnail
         --enable-filter=thumbnail_cuda
-        --enable-filter=movie
+        --disable-filter=movie
 
-        --enable-filter=avsynctest
-        --enable-filter=fsync
+        --disable-filter=avsynctest
+        --disable-filter=fsync
         --enable-filter=metadata
         --enable-filter=null
         --enable-filter=nullsink
         --enable-filter=nullsrc
-        --enable-filter=realtime
+        --disable-filter=realtime
 
         --enable-filter=acopy
         --enable-filter=amix
         --enable-filter=amerge
-        --enable-filter=areverse
+        --disable-filter=areverse
         --enable-filter=aresample
         --enable-filter=asplit
         --enable-filter=atrim
@@ -232,15 +276,15 @@ ExternalProject_Add(ffmpeg
         --enable-filter=tremolo
         --enable-filter=vibrato
         --enable-filter=virtualbass
-        --enable-filter=adeclick
-        --enable-filter=adeclip
-        --enable-filter=afftdn
-        --enable-filter=afwtdn
-        --enable-filter=anlmdn
-        --enable-filter=arnndn
-        --enable-filter=dcshift
-        --enable-filter=deesser
-        --enable-filter=fftdnoiz
+        --disable-filter=adeclick
+        --disable-filter=adeclip
+        --disable-filter=afftdn
+        --disable-filter=afwtdn
+        --disable-filter=anlmdn
+        --disable-filter=arnndn
+        --disable-filter=dcshift
+        --disable-filter=deesser
+        --disable-filter=fftdnoiz
         --enable-filter=ebur128
         --enable-filter=loudnorm
         --enable-filter=replaygain
@@ -256,7 +300,12 @@ ExternalProject_Add(ffmpeg
         --enable-filter=sine
         --enable-filter=spectrumsynth
 
-        --enable-avisynth
+        --enable-avdevice
+        --disable-indevs
+        --enable-outdev=opengl
+        --enable-outdev=sdl2
+
+        --disable-avisynth
         --disable-vapoursynth
         --enable-libass
         --enable-libbluray
@@ -291,7 +340,7 @@ ExternalProject_Add(ffmpeg
         --enable-libxml2
         --enable-libmysofa
         --enable-libssh
-        --enable-libsrt
+        --disable-libsrt
         --enable-libvpl
         --enable-libjxl
         --enable-libplacebo
@@ -307,5 +356,38 @@ ExternalProject_Add(ffmpeg
     LOG_DOWNLOAD 1 LOG_UPDATE 1 LOG_CONFIGURE 1 LOG_BUILD 1 LOG_INSTALL 1
 )
 
+ExternalProject_Add_Step(ffmpeg copy-binary
+    DEPENDEES install
+    COMMAND ${CMAKE_COMMAND} -E copy <BINARY_DIR>/ffmpeg.exe                            ${CMAKE_CURRENT_BINARY_DIR}/ffmpeg-package/ffmpeg.exe
+    COMMAND ${CMAKE_COMMAND} -E copy <BINARY_DIR>/ffprobe.exe                           ${CMAKE_CURRENT_BINARY_DIR}/ffmpeg-package/ffprobe.exe
+
+    COMMAND ${CMAKE_COMMAND} -E copy <BINARY_DIR>/libavfilter/libavfilter.a             ${CMAKE_CURRENT_BINARY_DIR}/ffmpeg-package/libavfilter.a
+    COMMAND ${CMAKE_COMMAND} -E copy <BINARY_DIR>/libswresample/libswresample.a         ${CMAKE_CURRENT_BINARY_DIR}/ffmpeg-package/libswresample.a
+    COMMAND ${CMAKE_COMMAND} -E copy <BINARY_DIR>/libavutil/libavutil.a                 ${CMAKE_CURRENT_BINARY_DIR}/ffmpeg-package/libavutil.a
+    COMMAND ${CMAKE_COMMAND} -E copy <BINARY_DIR>/libavdevice/libavdevice.a             ${CMAKE_CURRENT_BINARY_DIR}/ffmpeg-package/libavdevice.a
+    COMMAND ${CMAKE_COMMAND} -E copy <BINARY_DIR>/libswscale/libswscale.a               ${CMAKE_CURRENT_BINARY_DIR}/ffmpeg-package/libswscale.a
+    COMMAND ${CMAKE_COMMAND} -E copy <BINARY_DIR>/libavcodec/libavcodec.a               ${CMAKE_CURRENT_BINARY_DIR}/ffmpeg-package/libavcodec.a
+    COMMAND ${CMAKE_COMMAND} -E copy <BINARY_DIR>/libavformat/libavformat.a             ${CMAKE_CURRENT_BINARY_DIR}/ffmpeg-package/libavformat.a
+    COMMENT "Copying ffmpeg binaries and manual"
+)
+
+set(RENAME ${CMAKE_CURRENT_BINARY_DIR}/ffmpeg-prefix/src/rename.sh)
+file(WRITE ${RENAME}
+"#!/bin/bash
+cd $1
+GIT=$(git rev-parse --short=7 HEAD)
+mv -f $2 $2-git-\${GIT}")
+
+ExternalProject_Add_Step(ffmpeg copy-package-dir
+    DEPENDEES copy-binary
+    COMMAND chmod 755 ${RENAME}
+
+    COMMAND mv -f ${CMAKE_CURRENT_BINARY_DIR}/ffmpeg-package ${CMAKE_BINARY_DIR}/ffmpeg-package-${TARGET_CPU}${x86_64_LEVEL}-${BUILDDATE}
+    COMMAND ${RENAME} <SOURCE_DIR> ${CMAKE_BINARY_DIR}/ffmpeg-package-${TARGET_CPU}${x86_64_LEVEL}-${BUILDDATE}
+    COMMENT "Moving ffmpeg package folder"
+    LOG 1
+)
+
 force_rebuild_git(ffmpeg)
-cleanup(ffmpeg install)
+force_meson_configure(ffmpeg)
+cleanup(ffmpeg copy-package-dir)

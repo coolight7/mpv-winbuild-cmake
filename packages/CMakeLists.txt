@@ -59,7 +59,7 @@ list(APPEND ep
     libbs2b
     openssl
     libssh
-    libsrt
+    # libsrt
     libarchive
     highway
     libjxl
