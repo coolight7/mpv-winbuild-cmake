@@ -6,25 +6,24 @@ ExternalProject_Add(mpv
         lcms2
         libarchive
         libass
-        libdvdnav
-        libdvdread
+        # libdvdnav
+        # libdvdread
         libiconv
         libjpeg
         libpng
-        luajit
+        # luajit
         rubberband
         uchardet
         openal-soft
-        mujs
+        # mujs
         vulkan
         shaderc
         libplacebo
         spirv-cross
-        vapoursynth
+        # vapoursynth
         libsdl2
     GIT_REPOSITORY https://github.com/mpv-player/mpv.git
     SOURCE_DIR ${SOURCE_LOCATION}
-    GIT_CLONE_FLAGS "--filter=tree:0"
     UPDATE_COMMAND ""
     CONFIGURE_COMMAND ${EXEC} CONF=1 meson setup <BINARY_DIR> <SOURCE_DIR>
         --prefix=${MINGW_INSTALL_PREFIX}
@@ -32,26 +31,27 @@ ExternalProject_Add(mpv
         --cross-file=${MESON_CROSS}
         --default-library=shared
         --prefer-static
-        -Ddebug=true
-        -Db_ndebug=true
+        -Dgpl=false
+        -Ddebug=false
+        -Db_ndebug=false
         -Doptimization=3
         -Db_lto=true
         ${mpv_lto_mode}
         -Dlibmpv=true
-        -Dpdf-build=enabled
-        -Dlua=enabled
-        -Djavascript=enabled
+        -Dpdf-build=disabled
+        -Dlua=disabled
+        -Djavascript=disabled
         -Dsdl2=enabled
         -Dlibarchive=enabled
         -Dlibbluray=enabled
-        -Ddvdnav=enabled
+        -Ddvdnav=disabled
         -Duchardet=enabled
         -Drubberband=enabled
         -Dlcms2=enabled
         -Dopenal=enabled
         -Dspirv-cross=enabled
         -Dvulkan=enabled
-        -Dvapoursynth=enabled
+        -Dvapoursynth=disabled
         ${mpv_gl}
         -Dc_args='-Wno-error=int-conversion'
     BUILD_COMMAND ${EXEC} LTO_JOB=1 PDB=1 ninja -C <BINARY_DIR>

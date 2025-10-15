@@ -20,16 +20,16 @@ list(APPEND ep
     speex
     libmodplug
     libvpx
-    xvidcore
+    # xvidcore
     game-music-emu
     libpng
-    x264
-    x265
-    libdvdcss
-    libdvdread
-    libdvdnav
+    # x264
+    # x265
+    # libdvdcss
+    # libdvdread
+    # libdvdnav
     libiconv
-    luajit
+    # luajit
     fribidi
     expat
     nettle
@@ -55,7 +55,7 @@ list(APPEND ep
     xxhash
     dav1d
     libwebp
-    vapoursynth
+    # vapoursynth
     libbs2b
     openssl
     libssh
@@ -66,7 +66,7 @@ list(APPEND ep
     uavs3d
     davs2
     angle-headers
-    mujs
+    # mujs
     spirv-headers
     spirv-tools
     spirv-cross
@@ -82,8 +82,8 @@ list(APPEND ep
     svtav1
     libplacebo
     libva
-    libzvbi
-    libaribcaption
+    # libzvbi
+    # libaribcaption
     libsixel
     ffmpeg
     mpv
