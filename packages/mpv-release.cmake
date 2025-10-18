@@ -5,7 +5,7 @@ ExternalProject_Add(mpv-release
     DEPENDS
         angle-headers
         ffmpeg
-        fribidi
+        # fribidi # 蓝光
         lcms2
         libarchive # 直接读取压缩文件/http解压gzip数据
         libass
@@ -42,7 +42,12 @@ ExternalProject_Add(mpv-release
         -Dgpl=true
         -Db_lto=true
         ${mpv_lto_mode}
+        -Ddebug=false
+        -Db_ndebug=true
+        -Doptimization=3
         -Dlibmpv=true
+        -Dcplayer=false
+        -Dgpl=true
         
         -Dhtml-build=disabled
         -Dmanpage-build=disabled
@@ -51,38 +56,40 @@ ExternalProject_Add(mpv-release
         -Dcplugins=disabled
         -Dlua=disabled
         -Djavascript=disabled
-        -Dshaderc=enabled
 
+        -Dlibbluray=disabled
+        -Ddvdnav=disabled
+        -Dvapoursynth=disabled
+        -Dlibarchive=enabled
+        -Duchardet=enabled
+        -Drubberband=enabled
+        -Dlcms2=enabled
+        -Diconv=enabled
+
+        -Dwin32-smtc=disabled
+        -Dwin32-threads=enabled
+        
+        -Dcaca=disabled
+        -Dsixel=disabled
+        -Dwayland=disabled
+        -Dx11=disabled
+        -Dalsa=disabled
+        -Dpulse=disabled
+        -Dwasapi=enabled
+        -Dopenal=enabled
+        -Dsdl2-audio=enabled
+        -Dsdl2=enabled
+        -Dd3d11=enabled
+        -Dvulkan=enabled
+        -Dshaderc=enabled
+        -Dspirv-cross=enabled
+        ${mpv_gl}
+        
         -Dcuda-hwaccel=enabled
         -Dcuda-interop=enabled
         -Dd3d-hwaccel=enabled
         -Dd3d9-hwaccel=enabled
         -Dgl-dxinterop-d3d9=enabled
-
-        -Dsdl2=enabled
-        -Dlibarchive=enabled
-        -Dlibbluray=enabled
-        -Ddvdnav=disabled
-        -Duchardet=enabled
-        -Drubberband=enabled
-        -Dlcms2=enabled
-        -Diconv=enabled
-        -Dspirv-cross=enabled
-
-        -Dd3d11=enabled
-        -Dopenal=enabled
-        -Dvulkan=enabled
-        ${mpv_gl}
-
-        -Dwin32-threads=enabled
-        -Dwin32-smtc=disabled
-        -Dwasapi=disabled
-
-        -Dvapoursynth=disabled
-        -Dwayland=disabled
-        -Dx11=disabled
-        -Dalsa=disabled
-        -Dpulse=disabled
         -Dc_args='-Wno-error=int-conversion'
     BUILD_COMMAND ${EXEC} LTO_JOB=1 ninja -C <BINARY_DIR>
     INSTALL_COMMAND ""
@@ -105,7 +112,6 @@ ExternalProject_Add_Step(mpv-release strip-binary
 
 ExternalProject_Add_Step(mpv-release copy-binary
     DEPENDEES strip-binary
-    COMMAND ${CMAKE_COMMAND} -E copy <BINARY_DIR>/mpv.exe                           ${CMAKE_CURRENT_BINARY_DIR}/mpv-package/mpv.exe
     COMMENT "Copying mpv binaries and manual"
 )
 

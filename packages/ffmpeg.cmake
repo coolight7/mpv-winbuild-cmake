@@ -4,16 +4,16 @@ ExternalProject_Add(ffmpeg
         avisynth-headers
         ${nvcodec_headers}
         bzip2
-        lame
+        # lame # mp3 encoder
         lcms2
         openssl
-        libssh
+        # libssh
         # libsrt
         libass
-        libbluray
+        # libbluray
         # libdvdnav
         # libdvdread
-        libmodplug
+        # libmodplug
         libpng
         libsoxr
         libbs2b
@@ -21,6 +21,7 @@ ExternalProject_Add(ffmpeg
         libwebp
         libzimg
         libmysofa
+        libiconv
         fontconfig
         harfbuzz
         opus
@@ -31,7 +32,7 @@ ExternalProject_Add(ffmpeg
         # xvidcore 
         libxml2
         libvpl
-        libopenmpt # 模块音乐格式解码
+        # libopenmpt # 模块音乐格式解码
         libjxl
         shaderc
         libplacebo
@@ -97,16 +98,6 @@ ExternalProject_Add(ffmpeg
         --enable-swscale
         --enable-swresample
 
-        --enable-network
-        --enable-amf
-        --enable-dxva2
-        --disable-libmfx
-        --enable-libuavs3d
-        --enable-d3d11va
-        --enable-openal
-        --enable-opengl
-        --enable-vaapi
-
         --enable-bsfs
         --disable-bsf=mov2textsub
         --disable-bsf=text2movsub
@@ -120,6 +111,8 @@ ExternalProject_Add(ffmpeg
         --disable-protocol=rtmpts
         --disable-protocol=rtp
         --disable-protocol=srtp
+        --disable-protocol=libsrt
+        --disable-protocol=libssh
         --enable-protocol=async
         --enable-protocol=cache
         --enable-protocol=crypto
@@ -135,8 +128,6 @@ ExternalProject_Add(ffmpeg
         --enable-protocol=tcp
         --enable-protocol=tls
         --enable-protocol=udp
-        --enable-protocol=libssh
-        --disable-protocol=libsrt
 
         # 启用图片相关的封装器
         --disable-muxers
@@ -305,48 +296,60 @@ ExternalProject_Add(ffmpeg
         --enable-outdev=opengl
         --enable-outdev=sdl2
 
+        --disable-libmfx
         --disable-avisynth
         --disable-vapoursynth
-        --enable-libass
-        --enable-libbluray
+        --disable-libbluray
         --disable-libdvdnav
         --disable-libdvdread
+        --disable-libmodplug
+        --disable-libopenmpt
+        --disable-libx264
+        --disable-libx265
+        --disable-libsrt
+        --disable-libzvbi
+        --disable-libaribcaption
+        --disable-libxvid
+        --disable-libmp3lame
+        --disable-libssh
+        --disable-libspeex
+        
+        --disable-libsvtav1
+
+        --enable-network
+        --enable-amf
+        --enable-dxva2
+        --enable-libuavs3d
+        --enable-d3d11va
+        --enable-openal
+        --enable-opengl
+        --enable-vaapi
+        --enable-libass
         --enable-libfreetype
         --enable-libfribidi
         --enable-libfontconfig
         --enable-libharfbuzz
-        --enable-libmodplug
-        --enable-libopenmpt
-        --enable-libmp3lame
         --enable-lcms2
         --enable-libopus
         --enable-libsoxr
-        --enable-libspeex
         --enable-libvorbis
         --enable-libbs2b
         --enable-librubberband
         --enable-libvpx
         --enable-libwebp
-        --disable-libx264
-        --disable-libx265
         --enable-libaom
-        --enable-libsvtav1
         --enable-libdav1d
-        ${ffmpeg_davs2_cmd}
-        ${ffmpeg_uavs3d_cmd}
-        --disable-libxvid
         --enable-libzimg
         --enable-openssl
         --enable-libxml2
+	    --enable-iconv
         --enable-libmysofa
-        --enable-libssh
-        --disable-libsrt
         --enable-libvpl
         --enable-libjxl
         --enable-libplacebo
         --enable-libshaderc
-        --disable-libzvbi
-        --disable-libaribcaption
+        ${ffmpeg_davs2_cmd}
+        ${ffmpeg_uavs3d_cmd}
         ${ffmpeg_cuda}
         ${ffmpeg_lto}
         --extra-cflags='-Wno-error=int-conversion'
