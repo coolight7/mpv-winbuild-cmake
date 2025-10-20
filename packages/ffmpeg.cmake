@@ -24,6 +24,7 @@ ExternalProject_Add(ffmpeg
         libiconv
         fontconfig
         harfbuzz
+        vulkan
         opus
         speex
         vorbis
@@ -62,13 +63,13 @@ ExternalProject_Add(ffmpeg
         --pkg-config-flags=--static
         --enable-cross-compile
 
-        --enable-gpl # --enable-gpl
+        --enable-gpl
         --enable-nonfree
         --enable-version3
 
         --disable-debug
-        --disable-shared
-        --enable-static
+        --enable-shared
+        --disable-static
         --enable-stripping
         --enable-runtime-cpudetect
         --enable-small
@@ -321,6 +322,7 @@ ExternalProject_Add(ffmpeg
         --enable-dxva2
         --enable-libuavs3d
         --enable-d3d11va
+	    --disable-vulkan
         --enable-openal
         --enable-opengl
         --enable-vaapi
@@ -364,13 +366,21 @@ ExternalProject_Add_Step(ffmpeg copy-binary
     COMMAND ${CMAKE_COMMAND} -E copy <BINARY_DIR>/ffmpeg.exe                            ${CMAKE_CURRENT_BINARY_DIR}/ffmpeg-package/ffmpeg.exe
     COMMAND ${CMAKE_COMMAND} -E copy <BINARY_DIR>/ffprobe.exe                           ${CMAKE_CURRENT_BINARY_DIR}/ffmpeg-package/ffprobe.exe
 
-    COMMAND ${CMAKE_COMMAND} -E copy <BINARY_DIR>/libavfilter/libavfilter.a             ${CMAKE_CURRENT_BINARY_DIR}/ffmpeg-package/libavfilter.a
-    COMMAND ${CMAKE_COMMAND} -E copy <BINARY_DIR>/libswresample/libswresample.a         ${CMAKE_CURRENT_BINARY_DIR}/ffmpeg-package/libswresample.a
-    COMMAND ${CMAKE_COMMAND} -E copy <BINARY_DIR>/libavutil/libavutil.a                 ${CMAKE_CURRENT_BINARY_DIR}/ffmpeg-package/libavutil.a
-    COMMAND ${CMAKE_COMMAND} -E copy <BINARY_DIR>/libavdevice/libavdevice.a             ${CMAKE_CURRENT_BINARY_DIR}/ffmpeg-package/libavdevice.a
-    COMMAND ${CMAKE_COMMAND} -E copy <BINARY_DIR>/libswscale/libswscale.a               ${CMAKE_CURRENT_BINARY_DIR}/ffmpeg-package/libswscale.a
-    COMMAND ${CMAKE_COMMAND} -E copy <BINARY_DIR>/libavcodec/libavcodec.a               ${CMAKE_CURRENT_BINARY_DIR}/ffmpeg-package/libavcodec.a
-    COMMAND ${CMAKE_COMMAND} -E copy <BINARY_DIR>/libavformat/libavformat.a             ${CMAKE_CURRENT_BINARY_DIR}/ffmpeg-package/libavformat.a
+    # COMMAND ${CMAKE_COMMAND} -E copy <BINARY_DIR>/libavfilter/libavfilter.a             ${CMAKE_CURRENT_BINARY_DIR}/ffmpeg-package/libavfilter.a
+    # COMMAND ${CMAKE_COMMAND} -E copy <BINARY_DIR>/libswresample/libswresample.a         ${CMAKE_CURRENT_BINARY_DIR}/ffmpeg-package/libswresample.a
+    # COMMAND ${CMAKE_COMMAND} -E copy <BINARY_DIR>/libavutil/libavutil.a                 ${CMAKE_CURRENT_BINARY_DIR}/ffmpeg-package/libavutil.a
+    # COMMAND ${CMAKE_COMMAND} -E copy <BINARY_DIR>/libavdevice/libavdevice.a             ${CMAKE_CURRENT_BINARY_DIR}/ffmpeg-package/libavdevice.a
+    # COMMAND ${CMAKE_COMMAND} -E copy <BINARY_DIR>/libswscale/libswscale.a               ${CMAKE_CURRENT_BINARY_DIR}/ffmpeg-package/libswscale.a
+    # COMMAND ${CMAKE_COMMAND} -E copy <BINARY_DIR>/libavcodec/libavcodec.a               ${CMAKE_CURRENT_BINARY_DIR}/ffmpeg-package/libavcodec.a
+    # COMMAND ${CMAKE_COMMAND} -E copy <BINARY_DIR>/libavformat/libavformat.a             ${CMAKE_CURRENT_BINARY_DIR}/ffmpeg-package/libavformat.a
+
+    COMMAND ${CMAKE_COMMAND} -E copy <BINARY_DIR>/libavfilter/avfilter.dll             ${CMAKE_CURRENT_BINARY_DIR}/ffmpeg-package/avfilter.dll
+    COMMAND ${CMAKE_COMMAND} -E copy <BINARY_DIR>/libswresample/swresample.dll         ${CMAKE_CURRENT_BINARY_DIR}/ffmpeg-package/swresample.dll
+    COMMAND ${CMAKE_COMMAND} -E copy <BINARY_DIR>/libavutil/avutil.dll                 ${CMAKE_CURRENT_BINARY_DIR}/ffmpeg-package/avutil.dll
+    COMMAND ${CMAKE_COMMAND} -E copy <BINARY_DIR>/libavdevice/avdevice.dll             ${CMAKE_CURRENT_BINARY_DIR}/ffmpeg-package/avdevice.dll
+    COMMAND ${CMAKE_COMMAND} -E copy <BINARY_DIR>/libswscale/swscale.dll               ${CMAKE_CURRENT_BINARY_DIR}/ffmpeg-package/swscale.dll
+    COMMAND ${CMAKE_COMMAND} -E copy <BINARY_DIR>/libavcodec/avcodec.dll               ${CMAKE_CURRENT_BINARY_DIR}/ffmpeg-package/avcodec.dll
+    COMMAND ${CMAKE_COMMAND} -E copy <BINARY_DIR>/libavformat/avformat.dll             ${CMAKE_CURRENT_BINARY_DIR}/ffmpeg-package/avformat.dll
     COMMENT "Copying ffmpeg binaries and manual"
 )
 
@@ -379,6 +389,7 @@ file(WRITE ${RENAME}
 "#!/bin/bash
 cd $1
 GIT=$(git rev-parse --short=7 HEAD)
+rm -rf $2-git-\${GIT}
 mv -f $2 $2-git-\${GIT}")
 
 ExternalProject_Add_Step(ffmpeg copy-package-dir

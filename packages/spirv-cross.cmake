@@ -13,7 +13,8 @@ ExternalProject_Add(spirv-cross
         -DCMAKE_INSTALL_PREFIX=${MINGW_INSTALL_PREFIX}
         -DCMAKE_FIND_ROOT_PATH=${MINGW_INSTALL_PREFIX}
         -DBUILD_SHARED_LIBS=OFF
-        -DSPIRV_CROSS_SHARED=ON
+        -DSPIRV_CROSS_SHARED=ON # d3d11 需要 shared
+        -DSPIRV_CROSS_STATIC=ON
         -DSPIRV_CROSS_CLI=OFF
         -DSPIRV_CROSS_ENABLE_TESTS=OFF
         -DSPIRV_CROSS_ENABLE_MSL=OFF
@@ -28,7 +29,7 @@ ExternalProject_Add(spirv-cross
 
 ExternalProject_Add_Step(spirv-cross symlink
     DEPENDEES install
-    COMMAND ${CMAKE_COMMAND} -E create_symlink ${MINGW_INSTALL_PREFIX}/lib/pkgconfig/spirv-cross-c-shared.pc
+    COMMAND ${CMAKE_COMMAND} -E create_symlink ${MINGW_INSTALL_PREFIX}/lib/pkgconfig/spirv-cross-c.pc
                                                ${MINGW_INSTALL_PREFIX}/lib/pkgconfig/spirv-cross.pc
 )
 

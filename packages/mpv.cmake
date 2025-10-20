@@ -98,7 +98,6 @@ ExternalProject_Add_Step(mpv strip-binary
 
 ExternalProject_Add_Step(mpv copy-binary
     DEPENDEES strip-binary
-    ${mpv_copy_debug}
     COMMAND ${CMAKE_COMMAND} -E copy <BINARY_DIR>/libmpv-2.dll          ${CMAKE_CURRENT_BINARY_DIR}/mpv-package/libmpv-2.dll
     COMMAND ${CMAKE_COMMAND} -E copy <BINARY_DIR>/libmpv.dll.a          ${CMAKE_CURRENT_BINARY_DIR}/mpv-package/libmpv.dll.a
     COMMAND ${CMAKE_COMMAND} -E copy <SOURCE_DIR>/include/mpv/client.h       ${CMAKE_CURRENT_BINARY_DIR}/mpv-package/include/mpv/client.h
@@ -108,20 +107,10 @@ ExternalProject_Add_Step(mpv copy-binary
     COMMENT "Copying mpv binaries and manual"
 )
 
-set(RENAME ${CMAKE_CURRENT_BINARY_DIR}/mpv-prefix/src/rename.sh)
-file(WRITE ${RENAME}
-"#!/bin/bash
-cd $1
-GIT=$(git rev-parse --short=7 HEAD)
-mv -f $2 $2-git-\${GIT}")
-
 ExternalProject_Add_Step(mpv copy-package-dir
     DEPENDEES copy-binary
-    COMMAND chmod 755 ${RENAME}
 
     COMMAND mv -f ${CMAKE_CURRENT_BINARY_DIR}/mpv-package ${CMAKE_BINARY_DIR}/mpv-package-${TARGET_CPU}${x86_64_LEVEL}-${BUILDDATE}
-    COMMAND mv -f ${CMAKE_CURRENT_BINARY_DIR}/mpv-debug ${CMAKE_BINARY_DIR}/mpv-package-${TARGET_CPU}${x86_64_LEVEL}-${BUILDDATE}/
-    COMMAND ${RENAME} <SOURCE_DIR> ${CMAKE_BINARY_DIR}/mpv-package-${TARGET_CPU}${x86_64_LEVEL}-${BUILDDATE}
 
     COMMENT "Moving mpv package folder"
     LOG 1
