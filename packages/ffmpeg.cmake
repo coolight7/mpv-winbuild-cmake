@@ -39,8 +39,8 @@ ExternalProject_Add(ffmpeg
         libplacebo
         # libzvbi       # 用于解析电视信号帧之间空白间隔内的信息
         # libaribcaption # 解析、转换日本 ARIB STD-B24 标准字幕格式
-        aom         # av1 编解码
-        svtav1      # av1 编解码
+        # aom         # av1 编解码，主要编码
+        # svtav1      # av1 编解码
         dav1d
         # vapoursynth  # python 扩展视频处理
         ${ffmpeg_uavs3d}
@@ -73,15 +73,23 @@ ExternalProject_Add(ffmpeg
         --enable-stripping
         --enable-runtime-cpudetect
         --enable-small
+        --enable-pic
+        --enable-asm 
+        --enable-inline-asm
+        --enable-lto
+        --enable-lto=thin
         --enable-hwaccels
         --enable-optimizations
 
-        --disable-doc
         --disable-postproc
         --disable-gray
         --disable-swscale-alpha
+        --disable-doc
+	    --disable-xmm-clobber-test
+	    --disable-neon-clobber-test
         
         --disable-vdpau
+        --disable-appkit
         --disable-videotoolbox
         --disable-audiotoolbox
         --disable-linux-perf
@@ -316,6 +324,7 @@ ExternalProject_Add(ffmpeg
         --disable-libspeex
         
         --disable-libsvtav1
+        --disable-libaom
 
         --enable-network
         --enable-amf
@@ -339,7 +348,6 @@ ExternalProject_Add(ffmpeg
         --enable-librubberband
         --enable-libvpx
         --enable-libwebp
-        --enable-libaom
         --enable-libdav1d
         --enable-libzimg
         --enable-openssl
@@ -353,7 +361,6 @@ ExternalProject_Add(ffmpeg
         ${ffmpeg_davs2_cmd}
         ${ffmpeg_uavs3d_cmd}
         ${ffmpeg_cuda}
-        ${ffmpeg_lto}
         --extra-cflags='-Wno-error=int-conversion'
         "--extra-libs='${ffmpeg_extra_libs}'" # -lstdc++ / -lc++ needs by libjxl and shaderc
     BUILD_COMMAND ${MAKE}
@@ -367,20 +374,20 @@ ExternalProject_Add_Step(ffmpeg copy-binary
     COMMAND ${CMAKE_COMMAND} -E copy <BINARY_DIR>/ffprobe.exe                           ${CMAKE_CURRENT_BINARY_DIR}/ffmpeg-package/ffprobe.exe
 
     # COMMAND ${CMAKE_COMMAND} -E copy <BINARY_DIR>/libavfilter/libavfilter.a             ${CMAKE_CURRENT_BINARY_DIR}/ffmpeg-package/libavfilter.a
-    # COMMAND ${CMAKE_COMMAND} -E copy <BINARY_DIR>/libswresample/libswresample.a         ${CMAKE_CURRENT_BINARY_DIR}/ffmpeg-package/libswresample.a
     # COMMAND ${CMAKE_COMMAND} -E copy <BINARY_DIR>/libavutil/libavutil.a                 ${CMAKE_CURRENT_BINARY_DIR}/ffmpeg-package/libavutil.a
     # COMMAND ${CMAKE_COMMAND} -E copy <BINARY_DIR>/libavdevice/libavdevice.a             ${CMAKE_CURRENT_BINARY_DIR}/ffmpeg-package/libavdevice.a
-    # COMMAND ${CMAKE_COMMAND} -E copy <BINARY_DIR>/libswscale/libswscale.a               ${CMAKE_CURRENT_BINARY_DIR}/ffmpeg-package/libswscale.a
     # COMMAND ${CMAKE_COMMAND} -E copy <BINARY_DIR>/libavcodec/libavcodec.a               ${CMAKE_CURRENT_BINARY_DIR}/ffmpeg-package/libavcodec.a
     # COMMAND ${CMAKE_COMMAND} -E copy <BINARY_DIR>/libavformat/libavformat.a             ${CMAKE_CURRENT_BINARY_DIR}/ffmpeg-package/libavformat.a
+    # COMMAND ${CMAKE_COMMAND} -E copy <BINARY_DIR>/libswresample/libswresample.a         ${CMAKE_CURRENT_BINARY_DIR}/ffmpeg-package/libswresample.a
+    # COMMAND ${CMAKE_COMMAND} -E copy <BINARY_DIR>/libswscale/libswscale.a               ${CMAKE_CURRENT_BINARY_DIR}/ffmpeg-package/libswscale.a
 
     COMMAND ${CMAKE_COMMAND} -E copy <BINARY_DIR>/libavfilter/avfilter.dll             ${CMAKE_CURRENT_BINARY_DIR}/ffmpeg-package/avfilter.dll
-    COMMAND ${CMAKE_COMMAND} -E copy <BINARY_DIR>/libswresample/swresample.dll         ${CMAKE_CURRENT_BINARY_DIR}/ffmpeg-package/swresample.dll
     COMMAND ${CMAKE_COMMAND} -E copy <BINARY_DIR>/libavutil/avutil.dll                 ${CMAKE_CURRENT_BINARY_DIR}/ffmpeg-package/avutil.dll
     COMMAND ${CMAKE_COMMAND} -E copy <BINARY_DIR>/libavdevice/avdevice.dll             ${CMAKE_CURRENT_BINARY_DIR}/ffmpeg-package/avdevice.dll
-    COMMAND ${CMAKE_COMMAND} -E copy <BINARY_DIR>/libswscale/swscale.dll               ${CMAKE_CURRENT_BINARY_DIR}/ffmpeg-package/swscale.dll
     COMMAND ${CMAKE_COMMAND} -E copy <BINARY_DIR>/libavcodec/avcodec.dll               ${CMAKE_CURRENT_BINARY_DIR}/ffmpeg-package/avcodec.dll
     COMMAND ${CMAKE_COMMAND} -E copy <BINARY_DIR>/libavformat/avformat.dll             ${CMAKE_CURRENT_BINARY_DIR}/ffmpeg-package/avformat.dll
+    COMMAND ${CMAKE_COMMAND} -E copy <BINARY_DIR>/libswresample/swresample.dll         ${CMAKE_CURRENT_BINARY_DIR}/ffmpeg-package/swresample.dll
+    COMMAND ${CMAKE_COMMAND} -E copy <BINARY_DIR>/libswscale/swscale.dll               ${CMAKE_CURRENT_BINARY_DIR}/ffmpeg-package/swscale.dll
     COMMENT "Copying ffmpeg binaries and manual"
 )
 
