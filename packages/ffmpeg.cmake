@@ -85,6 +85,10 @@ ExternalProject_Add(ffmpeg
         --disable-gray
         --disable-swscale-alpha
         --disable-doc
+        --disable-htmlpages
+        --disable-manpages
+        --disable-podpages
+        --disable-txtpages
 	    --disable-xmm-clobber-test
 	    --disable-neon-clobber-test
         
@@ -141,6 +145,7 @@ ExternalProject_Add(ffmpeg
         # 启用图片相关的封装器
         --disable-muxers
         --enable-muxer=image2
+        --enable-muxer=image2pipe
         --enable-muxer=mjpeg
         --enable-muxer=mpjpeg
         --enable-muxer=apng
@@ -200,110 +205,158 @@ ExternalProject_Add(ffmpeg
 
         --disable-encoders
         --enable-encoder=mjpeg
-        --disable-encoder=ljpeg
-        --disable-encoder=jpegls
-        --disable-encoder=jpeg2000
-        --enable-encoder=png
-        --enable-encoder=bmp
-        --enable-encoder=gif
+        --enable-encoder=ljpeg
+        --enable-encoder=jpegls
+        --enable-encoder=jpeg2000
         --enable-encoder=apng
+        --enable-encoder=bmp
+        --enable-encoder=dpx
+        --enable-encoder=exr
+        --enable-encoder=gif
+        --enable-encoder=png
+        --enable-encoder=pam
+        --enable-encoder=pbm
+        --enable-encoder=pcx
+        --enable-encoder=pfm
+        --enable-encoder=pgm
+        --enable-encoder=pgmyuv
+        --enable-encoder=phm
+        --enable-encoder=png
+        --enable-encoder=ppm
+        --enable-encoder=fits
         --enable-encoder=tiff
+        --enable-encoder=qoi
+        --enable-encoder=sgi
+        --enable-encoder=sunrast
+        --enable-encoder=targa
+        --enable-encoder=xbm
+        --enable-encoder=xwd
+        --enable-encoder=yuv4
+        --enable-encoder=wbmp
         --enable-encoder=libwebp
         --enable-encoder=libwebp_anim
-        --disable-encoder=ppm
-        --disable-encoder=pgm
-        --disable-encoder=pcx
-        --disable-encoder=sgi
-        --disable-encoder=sunrast
-        --disable-encoder=targa
-        --enable-encoder=wbmp
-        --disable-encoder=xbm
-        --disable-encoder=xwd
 
         --enable-parsers
 
         --disable-filters
+	    --disable-filter=adeclick
+	    --disable-filter=afftdn
+	    --disable-filter=afwtdn
+	    --disable-filter=anlmdn
+	    --disable-filter=arnndn
+	    --disable-filter=dcshift
+	    --disable-filter=deesser
+	    --disable-filter=fftdnoiz
+	    --disable-filter=avsynctest
+	    --disable-filter=fsync
+	    --disable-filter=realtime
+	    --disable-filter=areverse
+	    --disable-filter=showinfo
+	    --disable-filter=showframes
+	    --enable-filter=thumbnail
+	    --enable-filter=select
+	    --enable-filter=trim
+	    --enable-filter=atrim
+	    --enable-filter=fps
+	    --enable-filter=movie
+	    --enable-filter=metadata
+	    --enable-filter=null
+	    --enable-filter=nullsink
+	    --enable-filter=nullsrc
+	    --enable-filter=anull
+	    --enable-filter=anullsink
+	    --enable-filter=anullsrc
+	    --enable-filter=adeclip
+	    --enable-filter=acopy
+	    --enable-filter=asetpts
+	    --enable-filter=setpts
+	    --enable-filter=amix
+	    --enable-filter=amerge
+	    --enable-filter=aresample
+	    --enable-filter=asplit
+	    --enable-filter=copy
+	    --enable-filter=drawtext
+	    --enable-filter=volume
+	    --enable-filter=volumedetect
+	    --enable-filter=acompressor
+	    --enable-filter=adrc
+	    --enable-filter=dynaudnorm
+	    --enable-filter=limiter
+	    --enable-filter=mcompand
+	    --enable-filter=anequalizer
+	    --enable-filter=bandpass
+	    --enable-filter=bandreject
+	    --enable-filter=bass
+	    --enable-filter=equalizer
+	    --enable-filter=highpass
+	    --enable-filter=highshelf
+	    --enable-filter=lowpass
+	    --enable-filter=lowshelf
+	    --enable-filter=midequalizer
+	    --enable-filter=tiltshelf
+	    --enable-filter=aecho
+	    --enable-filter=aphaser
+	    --enable-filter=bs2b
+	    --enable-filter=crystalizer
+	    --enable-filter=flanger
+	    --enable-filter=haas
+	    --enable-filter=headphone
+	    --enable-filter=extrastereo
+	    --enable-filter=sofalizer
+	    --enable-filter=stereotools
+	    --enable-filter=stereowiden
+	    --enable-filter=surround
+	    --enable-filter=tremolo
+	    --enable-filter=vibrato
+	    --enable-filter=virtualbass
+	    --enable-filter=ebur128
+	    --enable-filter=loudnorm
+	    --enable-filter=replaygain
+	    --enable-filter=silencedetect
+	    --enable-filter=silenceremove
+	    --enable-filter=aexciter
+	    --enable-filter=amplify
+	    --enable-filter=apulsator
+	    --enable-filter=atempo
+	    --enable-filter=dialoguenhance
+	    --enable-filter=rubberband
+	    --enable-filter=sinc
+	    --enable-filter=sine
+	    --enable-filter=crossfeed
+	    --enable-filter=spectrumsynth
+	    --enable-filter=showwavespic
+	    --enable-filter=afreqshift
+	    --enable-filter=scale*
+	    --enable-filter=vflip
+	    --enable-filter=hflip
+	    --enable-filter=overlay
+	    --enable-filter=crop
+	    --enable-filter=cropdetect
+	    --enable-filter=format
+	    --enable-filter=aformat
+	    --enable-filter=noformat
+	    --enable-filter=signalstats
+	    --enable-filter=framepack
+	    --enable-filter=framerate
+	    --enable-filter=hwdownload
+	    --enable-filter=hwupload
 
-        --enable-filter=thumbnail
-        --enable-filter=thumbnail_cuda
-        --disable-filter=movie
-
-        --disable-filter=avsynctest
-        --disable-filter=fsync
-        --enable-filter=metadata
-        --enable-filter=null
-        --enable-filter=nullsink
-        --enable-filter=nullsrc
-        --disable-filter=realtime
-
-        --enable-filter=acopy
-        --enable-filter=amix
-        --enable-filter=amerge
-        --disable-filter=areverse
-        --enable-filter=aresample
-        --enable-filter=asplit
-        --enable-filter=atrim
-        --enable-filter=volume
-        --enable-filter=volumedetect
-        --enable-filter=acompressor
-        --enable-filter=adrc
-        --enable-filter=dynaudnorm
-        --enable-filter=limiter
-        --enable-filter=mcompand
-        --enable-filter=anequalizer
-        --enable-filter=bandpass
-        --enable-filter=bandreject
-        --enable-filter=bass
-        --enable-filter=equalizer
-        --enable-filter=highpass
-        --enable-filter=highshelf
-        --enable-filter=lowpass
-        --enable-filter=lowshelf
-        --enable-filter=midequalizer
-        --enable-filter=tiltshelf
-        --enable-filter=aecho
-        --enable-filter=aphaser
-        --enable-filter=bs2b
-        --enable-filter=crystalizer
-        --enable-filter=flanger
-        --enable-filter=haas
-        --enable-filter=headphone
-        --enable-filter=extrastereo
-        --enable-filter=sofalizer
-        --enable-filter=stereotools
-        --enable-filter=stereowiden
-        --enable-filter=surround
-        --enable-filter=tremolo
-        --enable-filter=vibrato
-        --enable-filter=virtualbass
-        --disable-filter=adeclick
-        --disable-filter=adeclip
-        --disable-filter=afftdn
-        --disable-filter=afwtdn
-        --disable-filter=anlmdn
-        --disable-filter=arnndn
-        --disable-filter=dcshift
-        --disable-filter=deesser
-        --disable-filter=fftdnoiz
-        --enable-filter=ebur128
-        --enable-filter=loudnorm
-        --enable-filter=replaygain
-        --enable-filter=silencedetect
-        --enable-filter=silenceremove
-        --enable-filter=aexciter
-        --enable-filter=amplify
-        --enable-filter=apulsator
-        --enable-filter=atempo
-        --enable-filter=dialoguenhance
-        --enable-filter=rubberband
-        --enable-filter=sinc
-        --enable-filter=sine
-        --enable-filter=spectrumsynth
-
-        --enable-avdevice
-        --disable-indevs
-        --enable-outdev=opengl
-        --enable-outdev=sdl2
+        --enable-indevs
+        --enable-outdevs
+        --disable-indev=libcdio
+        --disable-indev=v4l2
+        --disable-indev=android_camera
+        --disable-indev=decklink
+        --disable-indev=dshow
+        --disable-indev=gdigrab
+        --disable-indev=iec61883
+        --disable-indev=kmsgrab
+        --disable-indev=libdc1394
+        --disable-indev=vfwcap
+        --disable-indev=xcbgrab
+        --disable-indev=fbdev
+        --disable-outdev=caca
+        --disable-outdev=fbdev
 
         --disable-libmfx
         --disable-avisynth
@@ -326,12 +379,12 @@ ExternalProject_Add(ffmpeg
         --disable-libsvtav1
         --disable-libaom
 
+	    --disable-vulkan
         --enable-network
         --enable-amf
         --enable-dxva2
         --enable-libuavs3d
         --enable-d3d11va
-	    --disable-vulkan
         --enable-openal
         --enable-opengl
         --enable-vaapi

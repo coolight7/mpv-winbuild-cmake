@@ -3,9 +3,6 @@
 
 # 留意 自动 git clone ffmpeg 版本是否正确
 
-# 清理 package:
-# rm -rf src_packages/
-
 export BIT=x86_64
 export mpv_ver=0.40.0
 
@@ -27,7 +24,7 @@ cmake -DTARGET_ARCH=x86_64-w64-mingw32 \
     -DCMAKE_INSTALL_PREFIX="$PWD/clang_root" \
     -DCOMPILER_TOOLCHAIN=clang \
     -DGCC_ARCH=x86-64 \
-    -DSINGLE_SOURCE_LOCATION="$PWD/src_packages_mvp" \
+    -DSINGLE_SOURCE_LOCATION="$PWD/src_packages_mpv" \
     -DMINGW_INSTALL_PREFIX="$PWD/build_x86_64/x86_64-w64-mingw32" \
     -G Ninja -B build_x86_64_mpv -S .
 
