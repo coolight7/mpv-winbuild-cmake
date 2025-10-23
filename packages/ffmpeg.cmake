@@ -426,13 +426,13 @@ ExternalProject_Add_Step(ffmpeg copy-binary
     COMMAND ${CMAKE_COMMAND} -E copy <BINARY_DIR>/ffmpeg.exe                            ${CMAKE_CURRENT_BINARY_DIR}/ffmpeg-package/ffmpeg.exe
     COMMAND ${CMAKE_COMMAND} -E copy <BINARY_DIR>/ffprobe.exe                           ${CMAKE_CURRENT_BINARY_DIR}/ffmpeg-package/ffprobe.exe
 
-    # COMMAND ${CMAKE_COMMAND} -E copy <BINARY_DIR>/libavfilter/libavfilter.a             ${CMAKE_CURRENT_BINARY_DIR}/ffmpeg-package/libavfilter.a
-    # COMMAND ${CMAKE_COMMAND} -E copy <BINARY_DIR>/libavutil/libavutil.a                 ${CMAKE_CURRENT_BINARY_DIR}/ffmpeg-package/libavutil.a
-    # COMMAND ${CMAKE_COMMAND} -E copy <BINARY_DIR>/libavdevice/libavdevice.a             ${CMAKE_CURRENT_BINARY_DIR}/ffmpeg-package/libavdevice.a
-    # COMMAND ${CMAKE_COMMAND} -E copy <BINARY_DIR>/libavcodec/libavcodec.a               ${CMAKE_CURRENT_BINARY_DIR}/ffmpeg-package/libavcodec.a
-    # COMMAND ${CMAKE_COMMAND} -E copy <BINARY_DIR>/libavformat/libavformat.a             ${CMAKE_CURRENT_BINARY_DIR}/ffmpeg-package/libavformat.a
-    # COMMAND ${CMAKE_COMMAND} -E copy <BINARY_DIR>/libswresample/libswresample.a         ${CMAKE_CURRENT_BINARY_DIR}/ffmpeg-package/libswresample.a
-    # COMMAND ${CMAKE_COMMAND} -E copy <BINARY_DIR>/libswscale/libswscale.a               ${CMAKE_CURRENT_BINARY_DIR}/ffmpeg-package/libswscale.a
+    # COMMAND ${CMAKE_COMMAND} -E copy <BINARY_DIR>/libavfilter/libavfilter.lib             ${CMAKE_CURRENT_BINARY_DIR}/ffmpeg-package/libavfilter.lib
+    # COMMAND ${CMAKE_COMMAND} -E copy <BINARY_DIR>/libavutil/libavutil.lib                 ${CMAKE_CURRENT_BINARY_DIR}/ffmpeg-package/libavutil.lib
+    # COMMAND ${CMAKE_COMMAND} -E copy <BINARY_DIR>/libavdevice/libavdevice.lib             ${CMAKE_CURRENT_BINARY_DIR}/ffmpeg-package/libavdevice.lib
+    # COMMAND ${CMAKE_COMMAND} -E copy <BINARY_DIR>/libavcodec/libavcodec.lib               ${CMAKE_CURRENT_BINARY_DIR}/ffmpeg-package/libavcodec.lib
+    # COMMAND ${CMAKE_COMMAND} -E copy <BINARY_DIR>/libavformat/libavformat.lib             ${CMAKE_CURRENT_BINARY_DIR}/ffmpeg-package/libavformat.lib
+    # COMMAND ${CMAKE_COMMAND} -E copy <BINARY_DIR>/libswresample/libswresample.lib         ${CMAKE_CURRENT_BINARY_DIR}/ffmpeg-package/libswresample.lib
+    # COMMAND ${CMAKE_COMMAND} -E copy <BINARY_DIR>/libswscale/libswscale.lib               ${CMAKE_CURRENT_BINARY_DIR}/ffmpeg-package/libswscale.lib
 
     COMMAND ${CMAKE_COMMAND} -E copy <BINARY_DIR>/libavfilter/avfilter.dll             ${CMAKE_CURRENT_BINARY_DIR}/ffmpeg-package/avfilter.dll
     COMMAND ${CMAKE_COMMAND} -E copy <BINARY_DIR>/libavutil/avutil.dll                 ${CMAKE_CURRENT_BINARY_DIR}/ffmpeg-package/avutil.dll
@@ -464,4 +464,4 @@ ExternalProject_Add_Step(ffmpeg copy-package-dir
 
 force_rebuild_git(ffmpeg)
 force_meson_configure(ffmpeg)
-cleanup(ffmpeg copy-package-dir)
+# cleanup(ffmpeg copy-package-dir)
