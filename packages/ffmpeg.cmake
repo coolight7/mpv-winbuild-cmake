@@ -4,16 +4,17 @@ ExternalProject_Add(ffmpeg
         avisynth-headers
         ${nvcodec_headers}
         bzip2
-        # lame # mp3 encoder
+        lame # mp3 encoder
         lcms2
         openssl
         # libssh
         # libsrt
         libass
-        # libbluray
+        libbluray
         # libdvdnav
         # libdvdread
-        # libmodplug
+        # libmfx # 不能和 libvpl 共存
+        libmodplug
         libpng
         libsoxr
         libbs2b
@@ -28,19 +29,19 @@ ExternalProject_Add(ffmpeg
         opus
         speex
         vorbis
-        # x264      # only encodec --- vvv ---
-        # ${ffmpeg_x265}
-        # xvidcore 
+        x264      # only encodec --- vvv ---
+        ${ffmpeg_x265}
+        xvidcore 
         libxml2
         libvpl
-        # libopenmpt # 模块音乐格式解码
+        libopenmpt # 模块音乐格式解码
         libjxl
         shaderc
         libplacebo
         # libzvbi       # 用于解析电视信号帧之间空白间隔内的信息
-        # libaribcaption # 解析、转换日本 ARIB STD-B24 标准字幕格式
-        # aom         # av1 编解码，主要编码
-        # svtav1      # av1 编解码
+        libaribcaption # 解析、转换日本 ARIB STD-B24 标准字幕格式
+        aom         # av1 编解码，主要编码
+        svtav1      # av1 编解码
         dav1d
         # vapoursynth  # python 扩展视频处理
         ${ffmpeg_uavs3d}
@@ -83,7 +84,6 @@ ExternalProject_Add(ffmpeg
 
         --disable-postproc
         --disable-gray
-        --disable-swscale-alpha
         --disable-doc
         --disable-htmlpages
         --disable-manpages
@@ -91,6 +91,7 @@ ExternalProject_Add(ffmpeg
         --disable-txtpages
 	    --disable-xmm-clobber-test
 	    --disable-neon-clobber-test
+        --enable-swscale-alpha
         
         --disable-vdpau
         --disable-appkit
@@ -112,8 +113,6 @@ ExternalProject_Add(ffmpeg
         --enable-swresample
 
         --enable-bsfs
-        --disable-bsf=mov2textsub
-        --disable-bsf=text2movsub
 
         # protocols
         --disable-protocols
@@ -143,32 +142,9 @@ ExternalProject_Add(ffmpeg
         --enable-protocol=udp
 
         # 启用图片相关的封装器
-        --disable-muxers
-        --enable-muxer=image2
-        --enable-muxer=image2pipe
-        --enable-muxer=mjpeg
-        --enable-muxer=mpjpeg
-        --enable-muxer=apng
-        --enable-muxer=avif
-        --enable-muxer=fits
-        --enable-muxer=gif
-        --enable-muxer=ico
-        --enable-muxer=webp
+        --enable-muxers
 
         --enable-demuxers
-        --disable-demuxer=vobsub
-        --disable-demuxer=dvbsub
-        --disable-demuxer=dvbtxt
-        --disable-demuxer=mpl2
-        --disable-demuxer=aqtitle
-        --disable-demuxer=jacosub
-        --disable-demuxer=realtext
-        --disable-demuxer=tedcaptions
-        --disable-demuxer=stl
-        --disable-demuxer=ace
-        --disable-demuxer=gxf
-        --disable-demuxer=live_flv
-        --disable-demuxer=lxf
         --disable-demuxer=microdvd
         --disable-demuxer=rtp
         --disable-demuxer=rtsp
@@ -197,149 +173,16 @@ ExternalProject_Add(ffmpeg
         --disable-decoder=vp9_v4l2m2m
         --disable-decoder=dvbsub
         --disable-decoder=dvdsub
-        --disable-decoder=jacosub
-        --disable-decoder=realtext
-        --disable-decoder=stl
-        --disable-decoder=microdvd
-        --disable-decoder=mpl2
 
-        --disable-encoders
-        --enable-encoder=mjpeg
-        --enable-encoder=ljpeg
-        --enable-encoder=jpegls
-        --enable-encoder=jpeg2000
-        --enable-encoder=apng
-        --enable-encoder=bmp
-        --enable-encoder=dpx
-        --enable-encoder=exr
-        --enable-encoder=gif
-        --enable-encoder=png
-        --enable-encoder=pam
-        --enable-encoder=pbm
-        --enable-encoder=pcx
-        --enable-encoder=pfm
-        --enable-encoder=pgm
-        --enable-encoder=pgmyuv
-        --enable-encoder=phm
-        --enable-encoder=png
-        --enable-encoder=ppm
-        --enable-encoder=fits
-        --enable-encoder=tiff
-        --enable-encoder=qoi
-        --enable-encoder=sgi
-        --enable-encoder=sunrast
-        --enable-encoder=targa
-        --enable-encoder=xbm
-        --enable-encoder=xwd
-        --enable-encoder=yuv4
-        --enable-encoder=wbmp
-        --enable-encoder=libwebp
-        --enable-encoder=libwebp_anim
+        --enable-encoders
 
         --enable-parsers
 
-        --disable-filters
-	    --disable-filter=adeclick
+        --enable-filters
 	    --disable-filter=afftdn
 	    --disable-filter=afwtdn
 	    --disable-filter=anlmdn
 	    --disable-filter=arnndn
-	    --disable-filter=dcshift
-	    --disable-filter=deesser
-	    --disable-filter=fftdnoiz
-	    --disable-filter=avsynctest
-	    --disable-filter=fsync
-	    --disable-filter=realtime
-	    --disable-filter=areverse
-	    --disable-filter=showinfo
-	    --disable-filter=showframes
-	    --enable-filter=thumbnail
-	    --enable-filter=select
-	    --enable-filter=trim
-	    --enable-filter=atrim
-	    --enable-filter=fps
-	    --enable-filter=movie
-	    --enable-filter=metadata
-	    --enable-filter=null
-	    --enable-filter=nullsink
-	    --enable-filter=nullsrc
-	    --enable-filter=anull
-	    --enable-filter=anullsink
-	    --enable-filter=anullsrc
-	    --enable-filter=adeclip
-	    --enable-filter=acopy
-	    --enable-filter=asetpts
-	    --enable-filter=setpts
-	    --enable-filter=amix
-	    --enable-filter=amerge
-	    --enable-filter=aresample
-	    --enable-filter=asplit
-	    --enable-filter=copy
-	    --enable-filter=drawtext
-	    --enable-filter=volume
-	    --enable-filter=volumedetect
-	    --enable-filter=acompressor
-	    --enable-filter=adrc
-	    --enable-filter=dynaudnorm
-	    --enable-filter=limiter
-	    --enable-filter=mcompand
-	    --enable-filter=anequalizer
-	    --enable-filter=bandpass
-	    --enable-filter=bandreject
-	    --enable-filter=bass
-	    --enable-filter=equalizer
-	    --enable-filter=highpass
-	    --enable-filter=highshelf
-	    --enable-filter=lowpass
-	    --enable-filter=lowshelf
-	    --enable-filter=midequalizer
-	    --enable-filter=tiltshelf
-	    --enable-filter=aecho
-	    --enable-filter=aphaser
-	    --enable-filter=bs2b
-	    --enable-filter=crystalizer
-	    --enable-filter=flanger
-	    --enable-filter=haas
-	    --enable-filter=headphone
-	    --enable-filter=extrastereo
-	    --enable-filter=sofalizer
-	    --enable-filter=stereotools
-	    --enable-filter=stereowiden
-	    --enable-filter=surround
-	    --enable-filter=tremolo
-	    --enable-filter=vibrato
-	    --enable-filter=virtualbass
-	    --enable-filter=ebur128
-	    --enable-filter=loudnorm
-	    --enable-filter=replaygain
-	    --enable-filter=silencedetect
-	    --enable-filter=silenceremove
-	    --enable-filter=aexciter
-	    --enable-filter=amplify
-	    --enable-filter=apulsator
-	    --enable-filter=atempo
-	    --enable-filter=dialoguenhance
-	    --enable-filter=rubberband
-	    --enable-filter=sinc
-	    --enable-filter=sine
-	    --enable-filter=crossfeed
-	    --enable-filter=spectrumsynth
-	    --enable-filter=showwavespic
-	    --enable-filter=afreqshift
-	    --enable-filter=scale*
-	    --enable-filter=vflip
-	    --enable-filter=hflip
-	    --enable-filter=overlay
-	    --enable-filter=crop
-	    --enable-filter=cropdetect
-	    --enable-filter=format
-	    --enable-filter=aformat
-	    --enable-filter=noformat
-	    --enable-filter=signalstats
-	    --enable-filter=framepack
-	    --enable-filter=framerate
-	    --enable-filter=hwdownload
-	    --enable-filter=hwupload
 
         --enable-indevs
         --enable-outdevs
@@ -358,26 +201,26 @@ ExternalProject_Add(ffmpeg
         --disable-outdev=caca
         --disable-outdev=fbdev
 
-        --disable-libmfx
         --disable-avisynth
         --disable-vapoursynth
-        --disable-libbluray
         --disable-libdvdnav
         --disable-libdvdread
-        --disable-libmodplug
-        --disable-libopenmpt
-        --disable-libx264
-        --disable-libx265
         --disable-libsrt
         --disable-libzvbi
-        --disable-libaribcaption
-        --disable-libxvid
-        --disable-libmp3lame
         --disable-libssh
-        --disable-libspeex
+        --disable-libmfx
         
-        --disable-libsvtav1
-        --disable-libaom
+        --enable-libaribcaption
+        --enable-libspeex
+        --enable-libbluray
+        --enable-libxvid
+        --enable-libmp3lame
+        --enable-libsvtav1
+        --enable-libaom
+        --enable-libmodplug
+        --enable-libopenmpt
+        --enable-libx264
+        --enable-libx265
 
 	    --disable-vulkan
         --enable-network

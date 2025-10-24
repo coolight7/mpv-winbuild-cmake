@@ -50,9 +50,9 @@ ExternalProject_Add(mpv
         -Dlua=disabled
         -Djavascript=disabled
 
-        -Dlibbluray=disabled
         -Ddvdnav=disabled
         -Dvapoursynth=disabled
+        -Dlibbluray=enabled
         -Dlibarchive=enabled
         -Duchardet=enabled
         -Drubberband=enabled

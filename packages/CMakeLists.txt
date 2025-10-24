@@ -20,11 +20,11 @@ list(APPEND ep
     speex
     libmodplug
     libvpx
-    # xvidcore
+    xvidcore
     game-music-emu
     libpng
-    # x264
-    # x265
+    x264
+    x265
     # libdvdcss
     # libdvdread
     # libdvdnav
@@ -51,6 +51,7 @@ list(APPEND ep
     avisynth-headers
     nvcodec-headers
     libmysofa
+    libmfx
     aom
     xxhash
     dav1d
@@ -83,7 +84,7 @@ list(APPEND ep
     libplacebo
     libva
     # libzvbi
-    # libaribcaption
+    libaribcaption
     libsixel
     ffmpeg
     mpv

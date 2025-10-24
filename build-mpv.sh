@@ -39,3 +39,9 @@ cd build_x86_64_mpv/
 ninja mpv
 
 # 如果编译失败了，可以直接进入 build_x86_64_mpv/packages/对应包/src/xxx-build/ 内手动按 xxx.cmake 编译 make && make install
+# 如果修改了某个模块的cmake，想要重新编译，可以按下面步骤：
+#   - cd build_x86_84_mpv
+#   - rm -rf packages/ffmpeg-prefix/
+#   - cd {项目根目录}
+#   - rm -rf src_packages_mpv/ffmpeg/
+#   - cp -r src_packages_mpv_temp/ffmpeg/ src_packages_mpv/
