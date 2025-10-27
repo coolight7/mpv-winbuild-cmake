@@ -26,6 +26,7 @@ ExternalProject_Add(mpv
     GIT_TAG v0.40.0
     SOURCE_DIR ${SOURCE_LOCATION}
     UPDATE_COMMAND ""
+    PATCH_COMMAND ${EXEC} git apply ${CMAKE_CURRENT_SOURCE_DIR}/mpv-*.patch
     CONFIGURE_COMMAND ${EXEC} CONF=1 meson setup <BINARY_DIR> <SOURCE_DIR>
         --prefix=${MINGW_INSTALL_PREFIX}
         --libdir=${MINGW_INSTALL_PREFIX}/lib
