@@ -49,7 +49,7 @@ ExternalProject_Add(ffmpeg
         libva
         openal-soft
     GIT_REPOSITORY https://github.com/FFmpeg/FFmpeg.git
-    GIT_TAG n7.1.2
+    GIT_TAG n8.0
     SOURCE_DIR ${SOURCE_LOCATION}
     GIT_CLONE_FLAGS "--sparse"
     GIT_CLONE_POST_COMMAND "sparse-checkout set --no-cone /* !tests/ref/fate"
@@ -62,6 +62,14 @@ ExternalProject_Add(ffmpeg
         --target-os=mingw32
         --pkg-config-flags=--static
         --enable-cross-compile
+        --cxx=${TARGET_ARCH}-clang++
+        --cc=${TARGET_ARCH}-clang
+        --nm=${TARGET_ARCH}-nm
+        --strip=${TARGET_ARCH}-strip
+        --ar=${TARGET_ARCH}-llvm-ar
+        --ranlib=${TARGET_ARCH}-llvm-ranlib
+        --stdc=c23
+        --stdcxx=c++23
 
         --enable-gpl
         --enable-nonfree
@@ -72,7 +80,6 @@ ExternalProject_Add(ffmpeg
         --disable-static
         --enable-stripping
         --enable-runtime-cpudetect
-        --enable-small
         --enable-pic
         --enable-asm 
         --enable-inline-asm
@@ -80,8 +87,8 @@ ExternalProject_Add(ffmpeg
         --enable-lto=thin
         --enable-hwaccels
         --enable-optimizations
+        --enable-small
 
-        --disable-postproc
         --disable-gray
         --disable-swscale-alpha
         --disable-doc
@@ -91,6 +98,7 @@ ExternalProject_Add(ffmpeg
         --disable-txtpages
 	    --disable-xmm-clobber-test
 	    --disable-neon-clobber-test
+        --disable-version-tracking
         
         --disable-vdpau
         --disable-appkit
@@ -175,26 +183,6 @@ ExternalProject_Add(ffmpeg
 
         --enable-decoders
         --disable-decoder=libaom_av1
-        --disable-decoder=aac_mediacodec
-        --disable-decoder=amrnb_mediacodec
-        --disable-decoder=amrwb_mediacodec
-        --disable-decoder=h264_mediacodec
-        --disable-decoder=hevc_mediacodec
-        --disable-decoder=mp3_mediacodec
-        --disable-decoder=opus_mediacodec
-        --disable-decoder=vorbis_mediacodec
-        --disable-decoder=mpeg2_mmal
-        --disable-decoder=h264_mmal
-        --disable-decoder=vp8_mmal
-        --disable-decoder=h263_v4l2m2m
-        --disable-decoder=h264_v4l2m2m
-        --disable-decoder=hevc_v4l2m2m
-        --disable-decoder=mpeg1_v4l2m2m
-        --disable-decoder=vc1_v4l2m2m
-        --disable-decoder=mpeg2_v4l2m2m
-        --disable-decoder=mpeg4_v4l2m2m
-        --disable-decoder=vp8_v4l2m2m
-        --disable-decoder=vp9_v4l2m2m
         --disable-decoder=dvbsub
         --disable-decoder=dvdsub
         --disable-decoder=jacosub
@@ -252,7 +240,6 @@ ExternalProject_Add(ffmpeg
 	    --disable-filter=realtime
 	    --disable-filter=areverse
 	    --disable-filter=showinfo
-	    --disable-filter=showframes
 	    --enable-filter=thumbnail
 	    --enable-filter=select
 	    --enable-filter=trim
@@ -361,6 +348,7 @@ ExternalProject_Add(ffmpeg
         --disable-libmfx
         --disable-avisynth
         --disable-vapoursynth
+        --disable-whisper
         --disable-libbluray
         --disable-libdvdnav
         --disable-libdvdread
@@ -379,7 +367,8 @@ ExternalProject_Add(ffmpeg
         --disable-libsvtav1
         --disable-libaom
 
-	    --disable-vulkan
+	    --enable-vulkan
+        --enable-vulkan-static  
         --enable-network
         --enable-amf
         --enable-dxva2
@@ -414,8 +403,8 @@ ExternalProject_Add(ffmpeg
         ${ffmpeg_davs2_cmd}
         ${ffmpeg_uavs3d_cmd}
         ${ffmpeg_cuda}
-        --extra-cflags='-Wno-error=int-conversion'
-        "--extra-libs='${ffmpeg_extra_libs}'" # -lstdc++ / -lc++ needs by libjxl and shaderc
+        --extra-cflags='-Wno-error=int-conversion -I<SOURCE_DIR>/compat/stdbit/'
+        "--extra-libs='${ffmpeg_extra_libs} -lm -lshlwapi -lpthread -lcfgmgr32'"
     BUILD_COMMAND ${MAKE}
     INSTALL_COMMAND ${MAKE} install
     LOG_DOWNLOAD 1 LOG_UPDATE 1 LOG_CONFIGURE 1 LOG_BUILD 1 LOG_INSTALL 1
