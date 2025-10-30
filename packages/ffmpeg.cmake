@@ -89,7 +89,6 @@ ExternalProject_Add(ffmpeg
         --enable-hwaccels
         --enable-optimizations
 
-        --disable-gray
         --disable-doc
         --disable-htmlpages
         --disable-manpages
@@ -98,6 +97,7 @@ ExternalProject_Add(ffmpeg
 	    --disable-xmm-clobber-test
 	    --disable-neon-clobber-test
         --disable-version-tracking
+        --enable-gray
         --enable-swscale-alpha
         
         --disable-vdpau
@@ -146,6 +146,7 @@ ExternalProject_Add(ffmpeg
         --enable-demuxers
 
         --enable-decoders
+        --disable-decoder=libaom_av1
 
         --enable-encoders
 
