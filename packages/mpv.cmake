@@ -21,11 +21,12 @@ ExternalProject_Add(mpv
         libplacebo
         spirv-cross
         # vapoursynth
-        libsdl2
+        # libsdl2
     GIT_REPOSITORY https://github.com/mpv-player/mpv.git
     GIT_TAG v0.40.0
     SOURCE_DIR ${SOURCE_LOCATION}
     UPDATE_COMMAND ""
+    PATCH_COMMAND ${EXEC} git apply ${CMAKE_CURRENT_SOURCE_DIR}/mpv-*.patch
     CONFIGURE_COMMAND ${EXEC} CONF=1 meson setup <BINARY_DIR> <SOURCE_DIR>
         --prefix=${MINGW_INSTALL_PREFIX}
         --libdir=${MINGW_INSTALL_PREFIX}/lib
@@ -70,8 +71,8 @@ ExternalProject_Add(mpv
         -Dpulse=disabled
         -Dwasapi=enabled
         -Dopenal=enabled
-        -Dsdl2-audio=enabled
-        -Dsdl2=enabled
+        -Dsdl2-audio=disabled
+        -Dsdl2=disabled
         -Dd3d11=enabled
         -Dvulkan=enabled
         -Dshaderc=enabled

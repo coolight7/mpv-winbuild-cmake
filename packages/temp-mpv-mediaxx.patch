@@ -1,0 +1,297 @@
+diff --git a/audio/decode/ad_lavc.c b/audio/decode/ad_lavc.c
+index 9c83892afd..d9175c9b5b 100644
+--- a/audio/decode/ad_lavc.c
++++ b/audio/decode/ad_lavc.c
+@@ -24,7 +24,9 @@
+ #include <libavutil/opt.h>
+ #include <libavutil/common.h>
+ #include <libavutil/intreadwrite.h>
++#include <libavcodec/avfft.h>
+ 
++#include "common/global.h"
+ #include "config.h"
+ 
+ #include "mpv_talloc.h"
+@@ -36,10 +38,14 @@
+ #include "common/msg.h"
+ #include "demux/packet.h"
+ #include "demux/stheader.h"
++#include "filters/filter.h"
+ #include "filters/f_decoder_wrapper.h"
+ #include "filters/filter_internal.h"
+ #include "options/m_config.h"
+ #include "options/options.h"
++#include "player/client.h"
++#include "player/command.h"
++#include "player/core.h"
+ 
+ struct priv {
+     struct mp_codec_params *codec;
+@@ -54,6 +60,10 @@ struct priv {
+     struct lavc_state state;
+ 
+     struct mp_decoder public;
++
++    RDFTContext *fft_ctx;       // FFT 上下文
++    int fft_size;               // FFT 窗口大小（如 1024）
++    float *fft_input;           // FFT 输入缓冲区（PCM 样本）
+ };
+ 
+ #define OPT_BASE_STRUCT struct ad_lavc_params
+@@ -84,6 +94,14 @@ static bool init(struct mp_filter *da, struct mp_codec_params *codec,
+                  const char *decoder)
+ {
+     struct priv *ctx = da->priv;
++    // 可配置为 2 的幂次方（如 512、2048）
++    ctx->fft_size = 256;
++    // 初始化 FFT 上下文（实数 FFT，适用于音频 PCM）
++    ctx->fft_ctx = av_rdft_init(ctx->fft_size, DFT_R2C);
++    ctx->fft_input = av_malloc_array(ctx->fft_size, sizeof(float));
++    da->fft_output_str = av_malloc_array(ctx->fft_size * 2, sizeof(char));
++    MP_DBG(da, "mediaxx: init fft -------------");
++
+     struct MPOpts *mpopts = mp_get_config_group(ctx, da->global, &mp_opt_root);
+     struct ad_lavc_params *opts =
+         mp_get_config_group(ctx, da->global, &ad_lavc_conf);
+@@ -191,6 +209,67 @@ static int send_packet(struct mp_filter *da, struct demux_packet *mpkt)
+     return ret;
+ }
+ 
++static void extract_audio_data(struct mp_filter *da, struct mp_aframe *mpframe) {
++    struct priv *pctx = da->priv;
++    // 获取 PCM 数据
++    uint8_t **pcm_data = mp_aframe_get_data_ro(mpframe);
++    if (!pcm_data)
++        return;
++
++    int num_samples = mp_aframe_get_size(mpframe); // 总样本数（单声道时等于帧数）
++    int channels = mp_aframe_get_channels(mpframe); // 声道数
++
++    int target_length = pctx->fft_size;
++
++    // 假设音频数据是float格式
++    float **data = (float**)pcm_data;
++
++    // 直接处理并缩放到目标长度
++    float scale_ratio = (float)num_samples / channels / target_length;
++
++    for (int i = 0; i < target_length; i++) {
++        float src_pos = i * scale_ratio;
++        int src_index = (int)src_pos;
++        float fraction = src_pos - src_index;
++        
++        float sample = 0;
++        if (src_index < num_samples - 1) {
++            // 对每个声道进行插值，然后平均
++            for (int c = 0; c < channels; c++) {
++                float s1 = data[c][src_index];
++                float s2 = data[c][src_index + 1];
++                sample += (s1 * (1 - fraction) + s2 * fraction);
++            }
++        } else {
++            // 最后一个样本
++            for (int c = 0; c < channels; c++) {
++                sample += data[c][num_samples - 1];
++            }
++        }
++        
++        pctx->fft_input[i] = sample / channels;
++    }
++
++    // 执行 FFT（输入需为复数格式，实数部分为 PCM 数据，虚数部分为 0）
++    av_rdft_calc(pctx->fft_ctx, pctx->fft_input);
++
++    // 转换结果为幅度谱（FFT 输出为复数，取模值）
++    for (int i = 0; i < pctx->fft_size / 2; i++) {
++        float real = pctx->fft_input[2*i];
++        float imag = pctx->fft_input[2*i + 1];
++        float item = sqrt(real*real + imag*imag); // 幅度值
++        // 将 item 映射到 [0, 255]，并转 00-FF 字符串
++        unsigned int val = 128 + (int)(item * 127.0f);
++        unsigned int val1 = (val & 0x0F);
++        unsigned int val2 = (val & 0xF0) >> 4;
++        da->fft_output_str[2*i] = (val1 > 9) ? (val1 - 10 + 'A') : (val1 + '0');
++        da->fft_output_str[2*i + 1] = (val2 > 9) ? (val2 - 10 + 'A') : (val2 + '0');
++    }
++
++    // 发送 FFT 结果
++    mp_notify_property(mp_client_get_mpctx(da->global->client_api), "audio-frame-fft");
++}
++
+ static int receive_frame(struct mp_filter *da, struct mp_frame *out)
+ {
+     struct priv *priv = da->priv;
+@@ -265,6 +344,9 @@ static int receive_frame(struct mp_filter *da, struct mp_frame *out)
+ 
+     if (mp_aframe_get_size(mpframe) > 0) {
+         *out = MAKE_FRAME(MP_FRAME_AUDIO, mpframe);
++        if (mp_client_get_mpctx(da->global->client_api)->audio_fft) {
++            extract_audio_data(da, mpframe);
++        }
+     } else {
+         talloc_free(mpframe);
+     }
+@@ -293,6 +375,7 @@ static struct mp_decoder *create(struct mp_filter *parent,
+                                  struct mp_codec_params *codec,
+                                  const char *decoder)
+ {
++    MP_DBG(parent, "mediaxx: init ad_lavc create -------------");
+     struct mp_filter *da = mp_filter_create(parent, &ad_lavc_filter);
+     if (!da)
+         return NULL;
+diff --git a/audio/decode/ad_spdif.c b/audio/decode/ad_spdif.c
+index 2c0c8d2966..1043766ff3 100644
+--- a/audio/decode/ad_spdif.c
++++ b/audio/decode/ad_spdif.c
+@@ -430,6 +430,7 @@ static struct mp_decoder *create(struct mp_filter *parent,
+                                  struct mp_codec_params *codec,
+                                  const char *decoder)
+ {
++    MP_DBG(parent, "mediaxx: init ad_spdif create -------------");
+     struct mp_filter *da = mp_filter_create(parent, &ad_spdif_filter);
+     if (!da)
+         return NULL;
+diff --git a/filters/filter.h b/filters/filter.h
+index b19169afd1..a0077a5da8 100644
+--- a/filters/filter.h
++++ b/filters/filter.h
+@@ -309,6 +309,7 @@ struct mp_filter {
+     // Private state for the filter implementation. API users must not access
+     // this.
+     void *priv;
++    char* fft_output_str;   // FFT 结果字符串
+ 
+     struct mpv_global *global;
+     struct mp_log *log;
+diff --git a/options/options.h b/options/options.h
+index 487e7d4a7d..5308d22a04 100644
+--- a/options/options.h
++++ b/options/options.h
+@@ -319,6 +319,7 @@ typedef struct MPOpts {
+     int audio_output_format;
+     int force_srate;
+     double playback_speed;
++    bool audio_fft;
+     double playback_pitch;
+     bool pitch_correction;
+     struct m_obj_settings *vf_settings;
+diff --git a/player/client.c b/player/client.c
+index 96bf202e35..7d1bff297d 100644
+--- a/player/client.c
++++ b/player/client.c
+@@ -792,6 +792,10 @@ void mp_client_broadcast_event_external(struct mp_client_api *api, int event,
+     mp_wakeup_core(mpctx);
+ }
+ 
++struct MPContext *mp_client_get_mpctx(struct mp_client_api *api) {
++    return api->mpctx;
++}
++
+ // If client_name == NULL, then broadcast and free the event.
+ int mp_client_send_event(struct MPContext *mpctx, const char *client_name,
+                          uint64_t reply_userdata, int event, void *data)
+diff --git a/player/client.h b/player/client.h
+index eed1a1cc8a..db9294863e 100644
+--- a/player/client.h
++++ b/player/client.h
+@@ -39,6 +39,8 @@ struct mpv_global *mp_client_get_global(struct mpv_handle *ctx);
+ void mp_client_broadcast_event_external(struct mp_client_api *api, int event,
+                                         void *data);
+ 
++struct MPContext *mp_client_get_mpctx(struct mp_client_api *api);
++
+ // m_option.c
+ void *node_get_alloc(struct mpv_node *node);
+ 
+diff --git a/player/command.c b/player/command.c
+index 2baad02855..c62b259923 100644
+--- a/player/command.c
++++ b/player/command.c
+@@ -1868,6 +1868,34 @@ static int mp_property_audio_delay(void *ctx, struct m_property *prop,
+     return mp_property_generic_option(mpctx, prop, action, arg);
+ }
+ 
++/// Generate Audio FFT Data (RW)
++static int mp_property_audio_fft(void *ctx, struct m_property *prop,
++                                   int action, void *arg)
++{
++    MPContext *mpctx = ctx;
++    return m_property_bool_ro(action, arg, mpctx->audio_fft);
++}
++
++static int mp_property_audio_frame_fft(void *ctx, struct m_property *prop,
++                                            int action, void *arg)
++{
++    switch (action) {
++    case M_PROPERTY_GET: {
++        MPContext *mpctx = ctx;
++        char *output = mpctx->filter_root->fft_output_str;
++        if (!output) {
++            return M_PROPERTY_UNAVAILABLE;
++        }
++        *(char **)arg = talloc_strdup(NULL, output);
++        return M_PROPERTY_OK;
++    }
++    case M_PROPERTY_GET_TYPE:
++        *(struct m_option *)arg = (struct m_option){.type = CONF_TYPE_STRING};
++        return M_PROPERTY_OK;
++    }
++    return M_PROPERTY_NOT_IMPLEMENTED;
++}
++
+ static int property_audiofmt(struct mp_aframe *fmt, int action, void *arg)
+ {
+     if (!fmt || !mp_aframe_config_is_valid(fmt))
+@@ -4333,6 +4361,8 @@ static const struct m_property mp_properties_base[] = {
+     {"ao-volume", mp_property_ao_volume},
+     {"ao-mute", mp_property_ao_mute},
+     {"audio-delay", mp_property_audio_delay},
++    {"audio-fft", mp_property_audio_fft},
++    {"audio-frame-fft", mp_property_audio_frame_fft},
+     M_PROPERTY_ALIAS("audio-codec-name", "current-tracks/audio/codec"),
+     M_PROPERTY_ALIAS("audio-codec", "current-tracks/audio/codec-desc"),
+     {"audio-params", mp_property_audio_params},
+@@ -4521,6 +4551,7 @@ static const char *const *const mp_event_property_change[] = {
+       "playlist-playing-pos"),
+     E(MP_EVENT_INPUT_PROCESSED, "mouse-pos", "touch-pos"),
+     E(MP_EVENT_CORE_IDLE, "core-idle", "eof-reached"),
++    E(MP_EVENT_AUDIO_FRAME_FFT, "audio-frame-fft"),
+ };
+ #undef E
+ 
+diff --git a/player/command.h b/player/command.h
+index 9a24b2d7af..e948e22cb3 100644
+--- a/player/command.h
++++ b/player/command.h
+@@ -116,6 +116,7 @@ enum {
+     MP_EVENT_TRACK_SWITCHED,
+     MP_EVENT_METADATA_UPDATE,
+     MP_EVENT_CHAPTER_CHANGE,
++    MP_EVENT_AUDIO_FRAME_FFT,
+ };
+ 
+ bool mp_hook_test_completion(struct MPContext *mpctx, char *type);
+diff --git a/player/core.h b/player/core.h
+index de49806fd0..9647f33cd3 100644
+--- a/player/core.h
++++ b/player/core.h
+@@ -342,6 +342,7 @@ typedef struct MPContext {
+     // Redundant values set from opts->playback_speed and speed_factor_*.
+     // update_playback_speed() updates them from the other fields.
+     double audio_speed, video_speed;
++    bool audio_fft;
+     bool display_sync_active;
+     int display_sync_drift_dir;
+     // Timing error (in seconds) due to rounding on vsync boundaries
+diff --git a/player/loadfile.c b/player/loadfile.c
+index b6b71fdbca..5716440187 100644
+--- a/player/loadfile.c
++++ b/player/loadfile.c
+@@ -1654,6 +1654,7 @@ static void play_current_file(struct MPContext *mpctx)
+     mpctx->playing_msg_shown = false;
+     mpctx->max_frames = -1;
+     mpctx->video_speed = mpctx->audio_speed = opts->playback_speed;
++    mpctx->audio_fft = opts->audio_fft;
+     mpctx->speed_factor_a = mpctx->speed_factor_v = 1.0;
+     mpctx->display_sync_error = 0.0;
+     mpctx->display_sync_active = false;

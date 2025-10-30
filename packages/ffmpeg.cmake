@@ -50,7 +50,7 @@ ExternalProject_Add(ffmpeg
         libva
         openal-soft
     GIT_REPOSITORY https://github.com/FFmpeg/FFmpeg.git
-    GIT_TAG n7.1.2
+    GIT_TAG n8.0
     SOURCE_DIR ${SOURCE_LOCATION}
     GIT_CLONE_FLAGS "--sparse"
     GIT_CLONE_POST_COMMAND "sparse-checkout set --no-cone /* !tests/ref/fate"
@@ -63,6 +63,14 @@ ExternalProject_Add(ffmpeg
         --target-os=mingw32
         --pkg-config-flags=--static
         --enable-cross-compile
+        --cxx=${TARGET_ARCH}-clang++
+        --cc=${TARGET_ARCH}-clang
+        --nm=${TARGET_ARCH}-nm
+        --strip=${TARGET_ARCH}-strip
+        --ar=${TARGET_ARCH}-llvm-ar
+        --ranlib=${TARGET_ARCH}-llvm-ranlib
+        --stdc=c23
+        --stdcxx=c++23
 
         --enable-gpl
         --enable-nonfree
@@ -73,7 +81,6 @@ ExternalProject_Add(ffmpeg
         --disable-static
         --enable-stripping
         --enable-runtime-cpudetect
-        --enable-small
         --enable-pic
         --enable-asm 
         --enable-inline-asm
@@ -82,7 +89,6 @@ ExternalProject_Add(ffmpeg
         --enable-hwaccels
         --enable-optimizations
 
-        --disable-postproc
         --disable-gray
         --disable-doc
         --disable-htmlpages
@@ -91,6 +97,7 @@ ExternalProject_Add(ffmpeg
         --disable-txtpages
 	    --disable-xmm-clobber-test
 	    --disable-neon-clobber-test
+        --disable-version-tracking
         --enable-swscale-alpha
         
         --disable-vdpau
@@ -116,63 +123,29 @@ ExternalProject_Add(ffmpeg
 
         # protocols
         --disable-protocols
-        --disable-protocol=ffrtmphttp
-        --disable-protocol=rtmp
-        --disable-protocol=rtmps
-        --disable-protocol=rtmpt
-        --disable-protocol=rtmpts
-        --disable-protocol=rtp
-        --disable-protocol=srtp
-        --disable-protocol=libsrt
-        --disable-protocol=libssh
-        --enable-protocol=async
-        --enable-protocol=cache
-        --enable-protocol=crypto
-        --enable-protocol=data
-        --enable-protocol=file
-        --enable-protocol=ftp
-        --enable-protocol=hls
-        --enable-protocol=pipe
-        --enable-protocol=http
-        --enable-protocol=httpproxy
-        --enable-protocol=https
-        --enable-protocol=subfile
-        --enable-protocol=tcp
-        --enable-protocol=tls
+        --disable-protocol=ffrtmphttp,rtmp,rtmps,rtmpt,rtmpts,rtp,srtp,libsrt,libssh 
+        --enable-protocol=async 
+        --enable-protocol=cache 
+        --enable-protocol=crypto 
+        --enable-protocol=data 
+        --enable-protocol=file 
+        --enable-protocol=ftp 
+        --enable-protocol=hls 
+        --enable-protocol=pipe 
+        --enable-protocol=http 
+        --enable-protocol=httpproxy 
+        --enable-protocol=https 
+        --enable-protocol=subfile 
+        --enable-protocol=tcp 
+        --enable-protocol=tls 
         --enable-protocol=udp
 
         # 启用图片相关的封装器
         --enable-muxers
 
         --enable-demuxers
-        --disable-demuxer=microdvd
-        --disable-demuxer=rtp
-        --disable-demuxer=rtsp
 
         --enable-decoders
-        --disable-decoder=libaom_av1
-        --disable-decoder=aac_mediacodec
-        --disable-decoder=amrnb_mediacodec
-        --disable-decoder=amrwb_mediacodec
-        --disable-decoder=h264_mediacodec
-        --disable-decoder=hevc_mediacodec
-        --disable-decoder=mp3_mediacodec
-        --disable-decoder=opus_mediacodec
-        --disable-decoder=vorbis_mediacodec
-        --disable-decoder=mpeg2_mmal
-        --disable-decoder=h264_mmal
-        --disable-decoder=vp8_mmal
-        --disable-decoder=h263_v4l2m2m
-        --disable-decoder=h264_v4l2m2m
-        --disable-decoder=hevc_v4l2m2m
-        --disable-decoder=mpeg1_v4l2m2m
-        --disable-decoder=vc1_v4l2m2m
-        --disable-decoder=mpeg2_v4l2m2m
-        --disable-decoder=mpeg4_v4l2m2m
-        --disable-decoder=vp8_v4l2m2m
-        --disable-decoder=vp9_v4l2m2m
-        --disable-decoder=dvbsub
-        --disable-decoder=dvdsub
 
         --enable-encoders
 
@@ -186,23 +159,12 @@ ExternalProject_Add(ffmpeg
 
         --enable-indevs
         --enable-outdevs
-        --disable-indev=libcdio
-        --disable-indev=v4l2
-        --disable-indev=android_camera
-        --disable-indev=decklink
-        --disable-indev=dshow
-        --disable-indev=gdigrab
-        --disable-indev=iec61883
-        --disable-indev=kmsgrab
-        --disable-indev=libdc1394
-        --disable-indev=vfwcap
-        --disable-indev=xcbgrab
-        --disable-indev=fbdev
-        --disable-outdev=caca
-        --disable-outdev=fbdev
+        --disable-indev=libcdio,v4l2,android_camera,decklink,dshow,gdigrab,iec61883,kmsgrab,libdc1394,vfwcap,xcbgrab,fbdev
+        --disable-outdev=caca,fbdev,v4l2,avfoundation
 
         --disable-avisynth
         --disable-vapoursynth
+        --disable-whisper
         --disable-libdvdnav
         --disable-libdvdread
         --disable-libsrt
@@ -222,7 +184,8 @@ ExternalProject_Add(ffmpeg
         --enable-libx264
         --enable-libx265
 
-	    --disable-vulkan
+	    --enable-vulkan
+        --enable-vulkan-static  
         --enable-network
         --enable-amf
         --enable-dxva2
@@ -258,7 +221,7 @@ ExternalProject_Add(ffmpeg
         ${ffmpeg_uavs3d_cmd}
         ${ffmpeg_cuda}
         --extra-cflags='-Wno-error=int-conversion'
-        "--extra-libs='${ffmpeg_extra_libs}'" # -lstdc++ / -lc++ needs by libjxl and shaderc
+        "--extra-libs='${ffmpeg_extra_libs} -lm -lshlwapi -lpthread -lcfgmgr32'"
     BUILD_COMMAND ${MAKE}
     INSTALL_COMMAND ${MAKE} install
     LOG_DOWNLOAD 1 LOG_UPDATE 1 LOG_CONFIGURE 1 LOG_BUILD 1 LOG_INSTALL 1

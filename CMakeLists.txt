@@ -17,6 +17,9 @@ endif()
 set(TARGET_ARCH "x86_64-w64-mingw32" CACHE STRING "The target architecture for this toolchain.")
 string(REGEX MATCH "^[^-]+" TARGET_CPU ${TARGET_ARCH})
 
+set(CMAKE_C_STANDARD 23)
+set(CMAKE_CXX_STANDARD 23)
+
 execute_process(COMMAND ${CMAKE_C_COMPILER} -dumpmachine OUTPUT_VARIABLE HOST_ARCH)
 string(REGEX MATCH "^[^-]+" HOST_CPU ${HOST_ARCH})
 
@@ -24,6 +27,13 @@ execute_process(COMMAND meson --version OUTPUT_VARIABLE MESON_VERSION)
 if(NOT MESON_VERSION GREATER_EQUAL 1.3)
     message(FATAL_ERROR "Meson 1.3.0 or greater is required. Install it with pip instead.")
 endif()
+
+set(CMAKE_C_COMPILER "${TARGET_ARCH}-clang")
+set(CMAKE_CXX_COMPILER "${TARGET_ARCH}-clang++")
+set(CMAKE_AR "${TARGET_ARCH}-llvm-ar")
+set(CMAKE_RANLIB "${TARGET_ARCH}-llvm-ranlib")
+set(CMAKE_STRIP "${TARGET_ARCH}-strip")
+set(CMAKE_NM "${TARGET_ARCH}-nm")
 
 if(TARGET_CPU STREQUAL "x86_64")
     set(TARGET_CPU_FAMILY "x86_64")
@@ -98,7 +108,7 @@ set(CLANG_FLAGS "" CACHE STRING "These flags will be added to the end of the cla
 set(LLD_FLAGS "" CACHE STRING "These flags will be added to the end of the lld args")
 set(GCC_FLAGS "" CACHE STRING "These flags will be added to the end of the gcc args")
 set(BFD_FLAGS "" CACHE STRING "These flags will be added to the end of the bfd args")
-set(COMPILER_TOOLCHAIN "gcc" CACHE STRING "gcc or clang")
+set(COMPILER_TOOLCHAIN "clang" CACHE STRING "gcc or clang")
 if(COMPILER_TOOLCHAIN STREQUAL "gcc")
     if(TARGET_ARCH STREQUAL "aarch64-w64-mingw32")
         message(FATAL_ERROR "The target architecture is unavailable for this toolchain.")
