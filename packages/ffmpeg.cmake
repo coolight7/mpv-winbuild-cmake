@@ -120,34 +120,25 @@ ExternalProject_Add(ffmpeg
         --enable-swresample
 
         --enable-bsfs
-        --disable-bsf=mov2textsub
-        --disable-bsf=text2movsub
+	    --disable-bsf=mov2textsub,text2movsub
 
         # protocols
         --disable-protocols
-        --disable-protocol=ffrtmphttp
-        --disable-protocol=rtmp
-        --disable-protocol=rtmps
-        --disable-protocol=rtmpt
-        --disable-protocol=rtmpts
-        --disable-protocol=rtp
-        --disable-protocol=srtp
-        --disable-protocol=libsrt
-        --disable-protocol=libssh
-        --enable-protocol=async
-        --enable-protocol=cache
-        --enable-protocol=crypto
-        --enable-protocol=data
-        --enable-protocol=file
-        --enable-protocol=ftp
-        --enable-protocol=hls
-        --enable-protocol=pipe
-        --enable-protocol=http
-        --enable-protocol=httpproxy
-        --enable-protocol=https
-        --enable-protocol=subfile
-        --enable-protocol=tcp
-        --enable-protocol=tls
+        --disable-protocol=ffrtmphttp,rtmp,rtmps,rtmpt,rtmpts,rtp,srtp,libsrt,libssh 
+        --enable-protocol=async 
+        --enable-protocol=cache 
+        --enable-protocol=crypto 
+        --enable-protocol=data 
+        --enable-protocol=file 
+        --enable-protocol=ftp 
+        --enable-protocol=hls 
+        --enable-protocol=pipe 
+        --enable-protocol=http 
+        --enable-protocol=httpproxy 
+        --enable-protocol=https 
+        --enable-protocol=subfile 
+        --enable-protocol=tcp 
+        --enable-protocol=tls 
         --enable-protocol=udp
 
         # 启用图片相关的封装器
@@ -164,65 +155,21 @@ ExternalProject_Add(ffmpeg
         --enable-muxer=webp
 
         --enable-demuxers
-        --disable-demuxer=vobsub
-        --disable-demuxer=dvbsub
-        --disable-demuxer=dvbtxt
-        --disable-demuxer=mpl2
-        --disable-demuxer=aqtitle
-        --disable-demuxer=jacosub
-        --disable-demuxer=realtext
-        --disable-demuxer=tedcaptions
-        --disable-demuxer=stl
-        --disable-demuxer=ace
-        --disable-demuxer=gxf
-        --disable-demuxer=live_flv
-        --disable-demuxer=lxf
-        --disable-demuxer=microdvd
-        --disable-demuxer=rtp
-        --disable-demuxer=rtsp
 
         --enable-decoders
-        --disable-decoder=libaom_av1
-        --disable-decoder=dvbsub
-        --disable-decoder=dvdsub
-        --disable-decoder=jacosub
-        --disable-decoder=realtext
-        --disable-decoder=stl
-        --disable-decoder=microdvd
-        --disable-decoder=mpl2
 
         --disable-encoders
-        --enable-encoder=mjpeg
+        --enable-encoder=mjpeg*
         --enable-encoder=ljpeg
         --enable-encoder=jpegls
         --enable-encoder=jpeg2000
         --enable-encoder=apng
-        --enable-encoder=bmp
-        --enable-encoder=dpx
-        --enable-encoder=exr
+        --enable-encoder=png
         --enable-encoder=gif
-        --enable-encoder=png
-        --enable-encoder=pam
-        --enable-encoder=pbm
-        --enable-encoder=pcx
-        --enable-encoder=pfm
-        --enable-encoder=pgm
-        --enable-encoder=pgmyuv
-        --enable-encoder=phm
-        --enable-encoder=png
-        --enable-encoder=ppm
-        --enable-encoder=fits
-        --enable-encoder=tiff
-        --enable-encoder=qoi
-        --enable-encoder=sgi
-        --enable-encoder=sunrast
-        --enable-encoder=targa
-        --enable-encoder=xbm
-        --enable-encoder=xwd
-        --enable-encoder=yuv4
         --enable-encoder=wbmp
         --enable-encoder=libwebp
         --enable-encoder=libwebp_anim
+        --enable-encoder=anull,vnull
 
         --enable-parsers
 
@@ -330,20 +277,8 @@ ExternalProject_Add(ffmpeg
 
         --enable-indevs
         --enable-outdevs
-        --disable-indev=libcdio
-        --disable-indev=v4l2
-        --disable-indev=android_camera
-        --disable-indev=decklink
-        --disable-indev=dshow
-        --disable-indev=gdigrab
-        --disable-indev=iec61883
-        --disable-indev=kmsgrab
-        --disable-indev=libdc1394
-        --disable-indev=vfwcap
-        --disable-indev=xcbgrab
-        --disable-indev=fbdev
-        --disable-outdev=caca
-        --disable-outdev=fbdev
+        --disable-indev=libcdio,v4l2,android_camera,decklink,dshow,gdigrab,iec61883,kmsgrab,libdc1394,vfwcap,xcbgrab,fbdev
+        --disable-outdev=caca,fbdev,v4l2,avfoundation
 
         --disable-libmfx
         --disable-avisynth
