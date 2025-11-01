@@ -119,166 +119,89 @@ ExternalProject_Add(ffmpeg
         --enable-swscale
         --enable-swresample
 
+        --enable-indevs
+        --enable-outdevs
+        --disable-indev=libcdio,v4l2,android_camera,decklink,dshow,gdigrab,iec61883,kmsgrab,libdc1394,vfwcap,xcbgrab,fbdev
+        --disable-outdev=caca,fbdev,v4l2,avfoundation
+
         --enable-bsfs
 	    --disable-bsf=mov2textsub,text2movsub
 
-        # protocols
-        --disable-protocols
-        --disable-protocol=ffrtmphttp,rtmp,rtmps,rtmpt,rtmpts,rtp,srtp,libsrt,libssh 
-        --enable-protocol=async 
-        --enable-protocol=cache 
-        --enable-protocol=crypto 
-        --enable-protocol=data 
-        --enable-protocol=file 
-        --enable-protocol=ftp 
-        --enable-protocol=hls 
-        --enable-protocol=pipe 
-        --enable-protocol=http 
-        --enable-protocol=httpproxy 
-        --enable-protocol=https 
-        --enable-protocol=subfile 
-        --enable-protocol=tcp 
-        --enable-protocol=tls 
-        --enable-protocol=udp
-
-        # 启用图片相关的封装器
-        --disable-muxers
-        --enable-muxer=image2
-        --enable-muxer=image2pipe
-        --enable-muxer=mjpeg
-        --enable-muxer=mpjpeg
-        --enable-muxer=apng
-        --enable-muxer=avif
-        --enable-muxer=fits
-        --enable-muxer=gif
-        --enable-muxer=ico
-        --enable-muxer=webp
-
-        --enable-demuxers
-
         --enable-decoders
+        --disable-decoder=libaom_av1
+	    --disable-decoder=srt,ass,ssa,realtext,libzvbi_teletext,movtext,bintext,dvbsub,dvdsub,subrip,jacosub,subviewer,subviewer1,pgssub,xsub,ccaption,libaribb24,libaribcaption,microdvd,sami,stl,webvtt
+	    --disable-decoder=libgme,libmodplug,libopenmpt
+	    --disable-decoder=indeo2,indeo3,indeo4,indeo5,cinepak
+	    --disable-decoder=bethsoftvid,idcin,roq_*,smacker,xan_*,c93,vcr1,vcr2,vqa,bink,binkaudio_dct,binkaudio_rdft,thp,dfa,ipu
+	    --disable-decoder=truespeech,tiertexseqvideo,nellymoser,qdmc,qdmc_at,qdm2,qdm2_at,g723_1,g728,sipr,ws_snd1,tmv,bonk,shorten,sol_dpcm
 
         --disable-encoders
         --enable-encoder=mjpeg*
         --enable-encoder=ljpeg
         --enable-encoder=jpegls
         --enable-encoder=jpeg2000
-        --enable-encoder=apng
-        --enable-encoder=png
-        --enable-encoder=gif
-        --enable-encoder=wbmp
-        --enable-encoder=libwebp
-        --enable-encoder=libwebp_anim
         --enable-encoder=anull,vnull
 
         --enable-parsers
 
-        --disable-filters
-	    --disable-filter=adeclick
-	    --disable-filter=afftdn
-	    --disable-filter=afwtdn
-	    --disable-filter=anlmdn
-	    --disable-filter=arnndn
-	    --disable-filter=dcshift
-	    --disable-filter=deesser
-	    --disable-filter=fftdnoiz
-	    --disable-filter=avsynctest
-	    --disable-filter=fsync
-	    --disable-filter=realtime
-	    --disable-filter=areverse
-	    --disable-filter=showinfo
-	    --enable-filter=thumbnail
-	    --enable-filter=select
-	    --enable-filter=trim
-	    --enable-filter=atrim
-	    --enable-filter=fps
-	    --enable-filter=movie
-	    --enable-filter=metadata
-	    --enable-filter=null
-	    --enable-filter=nullsink
-	    --enable-filter=nullsrc
-	    --enable-filter=anull
-	    --enable-filter=anullsink
-	    --enable-filter=anullsrc
-	    --enable-filter=adeclip
-	    --enable-filter=acopy
-	    --enable-filter=asetpts
-	    --enable-filter=setpts
-	    --enable-filter=amix
-	    --enable-filter=amerge
-	    --enable-filter=aresample
-	    --enable-filter=asplit
-	    --enable-filter=copy
-	    --enable-filter=drawtext
-	    --enable-filter=volume
-	    --enable-filter=volumedetect
-	    --enable-filter=acompressor
-	    --enable-filter=adrc
-	    --enable-filter=dynaudnorm
-	    --enable-filter=limiter
-	    --enable-filter=mcompand
-	    --enable-filter=anequalizer
-	    --enable-filter=bandpass
-	    --enable-filter=bandreject
-	    --enable-filter=bass
-	    --enable-filter=equalizer
-	    --enable-filter=highpass
-	    --enable-filter=highshelf
-	    --enable-filter=lowpass
-	    --enable-filter=lowshelf
-	    --enable-filter=midequalizer
-	    --enable-filter=tiltshelf
-	    --enable-filter=aecho
-	    --enable-filter=aphaser
-	    --enable-filter=bs2b
-	    --enable-filter=crystalizer
-	    --enable-filter=flanger
-	    --enable-filter=haas
-	    --enable-filter=headphone
-	    --enable-filter=extrastereo
-	    --enable-filter=sofalizer
-	    --enable-filter=stereotools
-	    --enable-filter=stereowiden
-	    --enable-filter=surround
-	    --enable-filter=tremolo
-	    --enable-filter=vibrato
-	    --enable-filter=virtualbass
-	    --enable-filter=ebur128
-	    --enable-filter=loudnorm
-	    --enable-filter=replaygain
-	    --enable-filter=silencedetect
-	    --enable-filter=silenceremove
-	    --enable-filter=aexciter
-	    --enable-filter=amplify
-	    --enable-filter=apulsator
-	    --enable-filter=atempo
-	    --enable-filter=dialoguenhance
-	    --enable-filter=rubberband
-	    --enable-filter=sinc
-	    --enable-filter=sine
-	    --enable-filter=crossfeed
-	    --enable-filter=spectrumsynth
-	    --enable-filter=showwavespic
-	    --enable-filter=afreqshift
-	    --enable-filter=scale*
-	    --enable-filter=vflip
-	    --enable-filter=hflip
-	    --enable-filter=overlay
-	    --enable-filter=crop
-	    --enable-filter=cropdetect
-	    --enable-filter=format
-	    --enable-filter=aformat
-	    --enable-filter=noformat
-	    --enable-filter=signalstats
-	    --enable-filter=framepack
-	    --enable-filter=framerate
-	    --enable-filter=hwdownload
-	    --enable-filter=hwupload
+        --disable-muxers
+        --enable-muxer=image2*,mjpeg,mpjpeg,smjpeg,null
 
-        --enable-indevs
-        --enable-outdevs
-        --disable-indev=libcdio,v4l2,android_camera,decklink,dshow,gdigrab,iec61883,kmsgrab,libdc1394,vfwcap,xcbgrab,fbdev
-        --disable-outdev=caca,fbdev,v4l2,avfoundation
+        --enable-demuxers
+        --disable-demuxer=lrc,srt,ass,realtext,mpsub,dvbtxt,dvdsub,vobsub,subrip,aqtitle,jacosub,subviewer,subviewer1,ccaption,microdvd,sami,stl,webvtt,psb,mpl2
+	    --disable-demuxer=rtp,rtsp,libgme,libmodplug,libopenmpt
+	    --disable-demuxer=bethsoftvid,smacker,bink,binka,vqa,thp,roq,tiertexseq,c93,lvf,nuv,dfa,dcstr,ipu,sol,sds,shorten,bonk,tmv,sbg,mgsts,g723_1,g728,lmlm4
+
+        --disable-filters
+        --enable-filter=format
+        --enable-filter=aformat
+        --enable-filter=noformat
+        --enable-filter=hwdownload
+        --enable-filter=hwupload
+        --enable-filter=copy
+        --enable-filter=showwavespic
+        --enable-filter=acompressor
+        --enable-filter=alimiter
+        --enable-filter=atrim
+        --enable-filter=aecho
+        --enable-filter=acopy
+        --enable-filter=amovie
+        --enable-filter=apulsator
+        --enable-filter=bs2b
+        --enable-filter=bass
+        --enable-filter=compand
+        --enable-filter=dialoguenhance
+        --enable-filter=equalizer
+        --enable-filter=loudnorm
+        --enable-filter=metadata
+        --enable-filter=pan
+        --enable-filter=stereowiden
+        --enable-filter=stereotools
+        --enable-filter=rubberband
+        --enable-filter=volume
+        --enable-filter=volumedetect
+        --enable-filter=null,nullsink,nullsrc,anull,anullsink,anullsrc
+        --enable-filter=amix
+        --enable-filter=aselect
+        --enable-filter=atempo
+        --enable-filter=aresample
+        --enable-filter=sinc
+        --enable-filter=sine
+
+        # protocols
+        --disable-protocols
+        --enable-protocol=async
+        --enable-protocol=cache
+        --enable-protocol=crypto
+        --enable-protocol=data
+        --enable-protocol=file
+        --enable-protocol=ftp
+        --enable-protocol=hls
+        --enable-protocol=pipe
+        --enable-protocol=http,https,httpproxy
+        # --enable-protocol=android_content
+        --enable-protocol=subfile
+        --enable-protocol=tcp,udp,tls
 
         --disable-libmfx
         --disable-avisynth
@@ -298,12 +221,15 @@ ExternalProject_Add(ffmpeg
         --disable-libmp3lame
         --disable-libssh
         --disable-libspeex
-        
         --disable-libsvtav1
         --disable-libaom
+        --disable-libmysofa
+        --disable-libplacebo
+        --disable-libshaderc
+        --disable-libfontconfig
 
 	    --enable-vulkan
-        --enable-vulkan-static  
+        --enable-vulkan-static
         --enable-network
         --enable-amf
         --enable-dxva2
@@ -315,7 +241,6 @@ ExternalProject_Add(ffmpeg
         --enable-libass
         --enable-libfreetype
         --enable-libfribidi
-        --enable-libfontconfig
         --enable-libharfbuzz
         --enable-lcms2
         --enable-libopus
@@ -330,11 +255,8 @@ ExternalProject_Add(ffmpeg
         --enable-openssl
         --enable-libxml2
 	    --enable-iconv
-        --enable-libmysofa
         --enable-libvpl
         --enable-libjxl
-        --enable-libplacebo
-        --enable-libshaderc
         ${ffmpeg_davs2_cmd}
         ${ffmpeg_uavs3d_cmd}
         ${ffmpeg_cuda}
