@@ -1,7 +1,8 @@
 ExternalProject_Add(mpv
     DEPENDS
         angle-headers
-        ffmpeg
+        # ffmpeg
+        mediaxx_ffmpeg_help
         fribidi
         lcms2
         libarchive # 直接读取压缩文件/http解压gzip数据
@@ -54,11 +55,11 @@ ExternalProject_Add(mpv
         -Dlibbluray=disabled
         -Ddvdnav=disabled
         -Dvapoursynth=disabled
+        -Duchardet=disabled
+        -Diconv=disabled
         -Dlibarchive=enabled
-        -Duchardet=enabled
         -Drubberband=enabled
         -Dlcms2=enabled
-        -Diconv=enabled
 
         -Dwin32-smtc=disabled
         -Dwin32-threads=enabled
@@ -69,21 +70,26 @@ ExternalProject_Add(mpv
         -Dx11=disabled
         -Dalsa=disabled
         -Dpulse=disabled
-        -Dwasapi=enabled
-        -Dopenal=enabled
         -Dsdl2-audio=disabled
         -Dsdl2=disabled
-        -Dd3d11=enabled
+        -Dopenal=disabled
+
+        -Dwasapi=enabled
+
         -Dvulkan=enabled
         -Dshaderc=enabled
         -Dspirv-cross=enabled
-        ${mpv_gl}
+        -Dd3d11=enabled
+        -Ddirect3d=disabled
+        -Degl-angle=enabled
+        -Dgl=enabled
+        -Dgl-dxinterop-d3d9=disabled
+        -Dvaapi-win32=disabled
         
         -Dcuda-hwaccel=enabled
         -Dcuda-interop=enabled
         -Dd3d-hwaccel=enabled
-        -Dd3d9-hwaccel=enabled
-        -Dgl-dxinterop-d3d9=enabled
+        -Dd3d9-hwaccel=disabled
 
         -Dc_args='-Wno-error=int-conversion'
     BUILD_COMMAND ${EXEC} LTO_JOB=1 PDB=1 ninja -C <BINARY_DIR>
@@ -99,24 +105,16 @@ ExternalProject_Add_Step(mpv strip-binary
 
 ExternalProject_Add_Step(mpv copy-binary
     DEPENDEES strip-binary
-    COMMAND ${CMAKE_COMMAND} -E copy <BINARY_DIR>/libmpv-2.dll          ${CMAKE_CURRENT_BINARY_DIR}/mpv-package/libmpv-2.dll
-    COMMAND ${CMAKE_COMMAND} -E copy <BINARY_DIR>/libmpv.dll.a          ${CMAKE_CURRENT_BINARY_DIR}/mpv-package/libmpv.dll.a
-    COMMAND ${CMAKE_COMMAND} -E copy <SOURCE_DIR>/include/mpv/client.h       ${CMAKE_CURRENT_BINARY_DIR}/mpv-package/include/mpv/client.h
-    COMMAND ${CMAKE_COMMAND} -E copy <SOURCE_DIR>/include/mpv/stream_cb.h    ${CMAKE_CURRENT_BINARY_DIR}/mpv-package/include/mpv/stream_cb.h
-    COMMAND ${CMAKE_COMMAND} -E copy <SOURCE_DIR>/include/mpv/render.h       ${CMAKE_CURRENT_BINARY_DIR}/mpv-package/include/mpv/render.h
-    COMMAND ${CMAKE_COMMAND} -E copy <SOURCE_DIR>/include/mpv/render_gl.h    ${CMAKE_CURRENT_BINARY_DIR}/mpv-package/include/mpv/render_gl.h
+    COMMAND ${CMAKE_COMMAND} -E copy <BINARY_DIR>/libmpv-2.dll               ${CMAKE_SOURCE_DIR}/output/libmpv-2.dll
+    COMMAND ${CMAKE_COMMAND} -E copy <BINARY_DIR>/libmpv.dll.a               ${CMAKE_SOURCE_DIR}/output/libmpv.dll.a
+    COMMAND ${CMAKE_COMMAND} -E copy <SOURCE_DIR>/include/mpv/client.h       ${CMAKE_SOURCE_DIR}/output/include/mpv/client.h
+    COMMAND ${CMAKE_COMMAND} -E copy <SOURCE_DIR>/include/mpv/stream_cb.h    ${CMAKE_SOURCE_DIR}/output/include/mpv/stream_cb.h
+    COMMAND ${CMAKE_COMMAND} -E copy <SOURCE_DIR>/include/mpv/render.h       ${CMAKE_SOURCE_DIR}/output/include/mpv/render.h
+    COMMAND ${CMAKE_COMMAND} -E copy <SOURCE_DIR>/include/mpv/render_gl.h    ${CMAKE_SOURCE_DIR}/output/include/mpv/render_gl.h
+    # d3dcompiler_43.dll
     COMMENT "Copying mpv binaries and manual"
-)
-
-ExternalProject_Add_Step(mpv copy-package-dir
-    DEPENDEES copy-binary
-
-    COMMAND mv -f ${CMAKE_CURRENT_BINARY_DIR}/mpv-package ${CMAKE_BINARY_DIR}/mpv-package-${TARGET_CPU}${x86_64_LEVEL}-${BUILDDATE}
-
-    COMMENT "Moving mpv package folder"
-    LOG 1
 )
 
 force_rebuild_git(mpv)
 force_meson_configure(mpv)
-cleanup(mpv copy-package-dir)
+# cleanup(mpv copy-binary)
