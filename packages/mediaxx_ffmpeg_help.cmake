@@ -16,15 +16,15 @@ ExternalProject_Add(mediaxx_ffmpeg_help
     LOG_DOWNLOAD 1 LOG_UPDATE 1 LOG_CONFIGURE 1 LOG_BUILD 1 LOG_INSTALL 1
 )
 
-set(BACK_LIB ${CMAKE_CURRENT_BINARY_DIR}/mediaxx_ffmpeg_help-prefix/src/back.sh)
-file(WRITE ${BACK_LIB}
+set(BACKUP_RESTORE_LIB ${CMAKE_CURRENT_BINARY_DIR}/mediaxx_ffmpeg_help-prefix/src/backup_restore.sh)
+file(WRITE ${BACKUP_RESTORE_LIB}
 "#!/bin/bash
 
 lib_path=$1
 
 cd $lib_path
 
-back_path=$lib_path/ffmpeg-back/
+back_path=$lib_path/ffmpeg-backup/
 
 cp $back_path/avfilter.lib     ./
 cp $back_path/avutil.lib       ./
@@ -55,24 +55,24 @@ reset 'libswscale.pc'
 
 ExternalProject_Add_Step(mediaxx_ffmpeg_help back-lib-pkgconfig
     DEPENDEES update
-    COMMAND chmod 755 ${BACK_LIB}
+    COMMAND chmod 755 ${BACKUP_RESTORE_LIB}
 
-    COMMAND ${BACK_LIB} ${MINGW_INSTALL_PREFIX}/lib/
-    COMMENT "back "
+    COMMAND ${BACKUP_RESTORE_LIB} ${MINGW_INSTALL_PREFIX}/lib/
+    COMMENT "backup  restore"
     LOG 1
 )
 
-set(RENAME_LIB ${CMAKE_CURRENT_BINARY_DIR}/mediaxx_ffmpeg_help-prefix/src/rename.sh)
-file(WRITE ${RENAME_LIB}
+set(BACKUP_LIB ${CMAKE_CURRENT_BINARY_DIR}/mediaxx_ffmpeg_help-prefix/src/backup.sh)
+file(WRITE ${BACKUP_LIB}
 "#!/bin/bash
 
 lib_path=$1
 
 cd $lib_path
-rm -rf ffmpeg-back
-mkdir ffmpeg-back
+rm -rf ffmpeg-backup
+mkdir ffmpeg-backup
 
-back_path=$lib_path/ffmpeg-back/
+back_path=$lib_path/ffmpeg-backup/
 
 cp avfilter.lib     $back_path/
 cp avutil.lib       $back_path/
@@ -102,10 +102,10 @@ reset 'libswscale.pc'
 
 ExternalProject_Add_Step(mediaxx_ffmpeg_help rename-lib-pkgconfig
     DEPENDEES install
-    COMMAND chmod 755 ${RENAME_LIB}
+    COMMAND chmod 755 ${BACKUP_LIB}
 
-    COMMAND ${RENAME_LIB} ${MINGW_INSTALL_PREFIX}/lib/
-    COMMENT "move "
+    COMMAND ${BACKUP_LIB} ${MINGW_INSTALL_PREFIX}/lib/
+    COMMENT "backup "
     LOG 1
 )
 
