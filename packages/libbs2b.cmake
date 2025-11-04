@@ -9,6 +9,7 @@ ExternalProject_Add(libbs2b
         --prefix=${MINGW_INSTALL_PREFIX}
         --enable-static
         --disable-shared
+        --with-pic
     BUILD_COMMAND ${MAKE}
     INSTALL_COMMAND ${MAKE} install
     BUILD_IN_SOURCE 1

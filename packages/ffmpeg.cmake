@@ -83,8 +83,7 @@ ExternalProject_Add(ffmpeg
         --enable-pic
         --enable-asm 
         --enable-inline-asm
-        --enable-lto
-        --enable-lto=thin
+        --enable-lto=full
         --enable-hwaccels
         --enable-optimizations
         --enable-small
@@ -222,12 +221,12 @@ ExternalProject_Add(ffmpeg
         --disable-libsvtav1
         --disable-libaom
         --disable-libmysofa
-        --disable-libplacebo
-        --disable-libshaderc
         --disable-libfontconfig
 
 	    --enable-vulkan
         --enable-vulkan-static
+        --enable-libplacebo
+        --enable-libshaderc
         --enable-network
         --enable-amf
         --enable-dxva2
@@ -258,7 +257,7 @@ ExternalProject_Add(ffmpeg
         ${ffmpeg_davs2_cmd}
         ${ffmpeg_uavs3d_cmd}
         ${ffmpeg_cuda}
-        --extra-cflags='-Wno-error=int-conversion'
+        --extra-cflags='-Wno-error=int-conversion -fPIC'
         "--extra-libs='${ffmpeg_extra_libs} -lm -lshlwapi -lpthread -lcfgmgr32'"
     BUILD_COMMAND ${MAKE}
     INSTALL_COMMAND ${MAKE} install

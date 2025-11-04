@@ -26,6 +26,18 @@ cd $lib_path
 
 back_path=$lib_path/ffmpeg-backup/
 
+if [[ ! -e $back_path ]]; then
+    exit 0
+fi
+
+mv avfilter.dll*      $back_path/
+mv avutil.dll*        $back_path/
+mv avdevice.dll*      $back_path/
+mv avcodec.dll*       $back_path/
+mv avformat.dll*      $back_path/
+mv swresample.dll*    $back_path/
+mv swscale.dll*       $back_path/
+
 cp $back_path/avfilter.lib     ./
 cp $back_path/avutil.lib       ./
 cp $back_path/avdevice.lib     ./
@@ -50,17 +62,16 @@ reset 'libavutil.pc'
 reset 'libavdevice.pc'
 reset 'libswresample.pc'
 reset 'libswscale.pc'
-
 ")
 
-ExternalProject_Add_Step(mediaxx_ffmpeg_help back-lib-pkgconfig
-    DEPENDEES update
-    COMMAND chmod 755 ${BACKUP_RESTORE_LIB}
+# ExternalProject_Add_Step(mediaxx_ffmpeg_help back-lib-pkgconfig
+#     DEPENDEES update
+#     COMMAND chmod 755 ${BACKUP_RESTORE_LIB}
 
-    COMMAND ${BACKUP_RESTORE_LIB} ${MINGW_INSTALL_PREFIX}/lib/
-    COMMENT "backup  restore"
-    LOG 1
-)
+#     COMMAND ${BACKUP_RESTORE_LIB} ${MINGW_INSTALL_PREFIX}/lib/
+#     COMMENT "backup  restore"
+#     LOG 1
+# )
 
 set(BACKUP_LIB ${CMAKE_CURRENT_BINARY_DIR}/mediaxx_ffmpeg_help-prefix/src/backup.sh)
 file(WRITE ${BACKUP_LIB}
@@ -69,18 +80,18 @@ file(WRITE ${BACKUP_LIB}
 lib_path=$1
 
 cd $lib_path
-rm -rf ffmpeg-backup
-mkdir ffmpeg-backup
-
 back_path=$lib_path/ffmpeg-backup/
 
-cp avfilter.lib     $back_path/
-cp avutil.lib       $back_path/
-cp avdevice.lib     $back_path/
-cp avcodec.lib      $back_path/
-cp avformat.lib     $back_path/
-cp swresample.lib   $back_path/
-cp swscale.lib      $back_path/
+rm -rf $back_path
+mkdir $back_path
+
+mv avfilter.lib     $back_path/
+mv avutil.lib       $back_path/
+mv avdevice.lib     $back_path/
+mv avcodec.lib      $back_path/
+mv avformat.lib     $back_path/
+mv swresample.lib   $back_path/
+mv swscale.lib      $back_path/
 
 pkgconfig_path=$lib_path/pkgconfig/
 
@@ -97,7 +108,6 @@ reset 'libavutil.pc'
 reset 'libavdevice.pc'
 reset 'libswresample.pc'
 reset 'libswscale.pc'
-
 ")
 
 ExternalProject_Add_Step(mediaxx_ffmpeg_help rename-lib-pkgconfig

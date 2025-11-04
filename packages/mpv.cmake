@@ -9,7 +9,7 @@ ExternalProject_Add(mpv
         libass
         # libdvdnav
         # libdvdread
-        libiconv
+        # libiconv
         libjpeg
         libpng
         # luajit
@@ -36,7 +36,7 @@ ExternalProject_Add(mpv
         --default-library=shared
         -Dbuildtype=release
         -Db_lto=true
-        ${mpv_lto_mode}
+        -Db_lto_mode=default
         -Ddebug=false
         -Db_ndebug=true
         -Doptimization=3
