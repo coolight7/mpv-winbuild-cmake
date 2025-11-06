@@ -13,8 +13,8 @@ ExternalProject_Add(mpv
         --cross-file=${MESON_CROSS}
         --prefer-static
         --default-library=shared
-        -Dc_link_args='-lmediaxx'
-        -Dcpp_link_args='-lmediaxx'
+        -Dc_link_args='-lmediaxx ${CMAKE_CURRENT_SOURCE_DIR}/mpv-export.def'
+        -Dcpp_link_args='-lmediaxx ${CMAKE_CURRENT_SOURCE_DIR}/mpv-export.def'
         -Dbuildtype=release
         -Db_lto=true
         -Db_lto_mode=default
