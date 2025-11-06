@@ -1,28 +1,7 @@
 ExternalProject_Add(mpv
     DEPENDS
-        angle-headers
         # ffmpeg
-        mediaxx_ffmpeg_help
-        fribidi
-        lcms2
-        libarchive # 直接读取压缩文件/http解压gzip数据
-        libass
-        # libdvdnav
-        # libdvdread
-        # libiconv
-        libjpeg
-        libpng
-        # luajit
-        rubberband
-        uchardet
-        openal-soft
-        # mujs
-        vulkan
-        shaderc
-        libplacebo
-        spirv-cross
-        # vapoursynth
-        # libsdl2
+        mediaxx
     GIT_REPOSITORY https://github.com/mpv-player/mpv.git
     GIT_TAG v0.40.0
     SOURCE_DIR ${SOURCE_LOCATION}
@@ -34,6 +13,8 @@ ExternalProject_Add(mpv
         --cross-file=${MESON_CROSS}
         --prefer-static
         --default-library=shared
+        -Dc_link_args='-lmediaxx'
+        -Dcpp_link_args='-lmediaxx'
         -Dbuildtype=release
         -Db_lto=true
         -Db_lto_mode=default
@@ -111,8 +92,19 @@ ExternalProject_Add_Step(mpv copy-binary
     COMMAND ${CMAKE_COMMAND} -E copy <SOURCE_DIR>/include/mpv/stream_cb.h    ${CMAKE_SOURCE_DIR}/output/include/mpv/stream_cb.h
     COMMAND ${CMAKE_COMMAND} -E copy <SOURCE_DIR>/include/mpv/render.h       ${CMAKE_SOURCE_DIR}/output/include/mpv/render.h
     COMMAND ${CMAKE_COMMAND} -E copy <SOURCE_DIR>/include/mpv/render_gl.h    ${CMAKE_SOURCE_DIR}/output/include/mpv/render_gl.h
+    
+    COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_SOURCE_DIR}/help/create_comm_syms.sh    ${CMAKE_SOURCE_DIR}/output/create_comm_syms.sh
+
     # d3dcompiler_43.dll
     COMMENT "Copying mpv binaries and manual"
+)
+
+ExternalProject_Add_Step(mpv gendef
+    DEPENDEES copy-binary
+    COMMAND chmod 755 ${CMAKE_SOURCE_DIR}/output/create_comm_syms.sh
+    COMMAND ${CMAKE_SOURCE_DIR}/output/create_comm_syms.sh
+    COMMENT ""
+    LOG 1
 )
 
 force_rebuild_git(mpv)

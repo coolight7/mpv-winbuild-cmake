@@ -86,7 +86,7 @@ list(APPEND ep
     # libaribcaption
     libsixel
     ffmpeg
-    mediaxx_ffmpeg_help
+    mediaxx
     mpv
     mpv-release
     mpv-packaging

@@ -1,5 +1,6 @@
 ExternalProject_Add(ffmpeg
     DEPENDS
+        angle-headers
         amf-headers
         avisynth-headers
         ${nvcodec_headers}
@@ -25,6 +26,7 @@ ExternalProject_Add(ffmpeg
         fontconfig
         harfbuzz
         vulkan
+        spirv-cross
         opus
         speex
         vorbis
@@ -48,6 +50,16 @@ ExternalProject_Add(ffmpeg
         rubberband
         libva
         openal-soft
+        fribidi
+        
+        # libmpv 放一起可能可以提供 ffmpeg autodetect，然后再控制导出符号给 libmpv 链接共享 ---
+        libarchive
+        libjpeg
+        # luajit
+        uchardet
+        # mujs
+        # vapoursynth
+        # libsdl2
     GIT_REPOSITORY https://github.com/FFmpeg/FFmpeg.git
     GIT_TAG n8.0
     SOURCE_DIR ${SOURCE_LOCATION}
@@ -251,9 +263,12 @@ ExternalProject_Add(ffmpeg
         --enable-libzimg
         --enable-openssl
         --enable-libxml2
-	    --enable-iconv
         --enable-libvpl
         --enable-libjxl
+	    --enable-iconv
+        --enable-zlib
+        --enable-bzlib
+        --enable-lzma
         ${ffmpeg_davs2_cmd}
         ${ffmpeg_uavs3d_cmd}
         ${ffmpeg_cuda}

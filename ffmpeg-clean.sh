@@ -1,3 +1,5 @@
+rm -rf build_x86_64/x86_64-w64-mingw32/lib/ffmpeg-backup
+
 rm build_x86_64/x86_64-w64-mingw32/bin/avcodec*
 rm build_x86_64/x86_64-w64-mingw32/bin/avdevice*
 rm build_x86_64/x86_64-w64-mingw32/bin/avfilter*

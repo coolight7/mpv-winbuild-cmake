@@ -1,4 +1,4 @@
-ExternalProject_Add(mediaxx_ffmpeg_help
+ExternalProject_Add(mediaxx
     DEPENDS
         ffmpeg
     UPDATE_COMMAND ""
@@ -6,17 +6,18 @@ ExternalProject_Add(mediaxx_ffmpeg_help
     CONFIGURE_COMMAND ${EXEC} CONF=1 cmake -H<SOURCE_DIR> -B<BINARY_DIR>
         -G Ninja
         -DCMAKE_BUILD_TYPE=Release
-        -DSTATIC_LINK_FFMPEG=ON
         "-DCMAKE_TOOLCHAIN_FILE=${TOOLCHAIN_FILE}"
         "-DCMAKE_INSTALL_PREFIX=${MINGW_INSTALL_PREFIX}"
         "-DCMAKE_FIND_ROOT_PATH=${MINGW_INSTALL_PREFIX}"
         -DBUILD_SHARED_LIBS=ON
+        -DSTATIC_LINK_FFMPEG=ON
+        -DEXPORT_ALL_SYMBOL=OFF
     BUILD_COMMAND ${EXEC} LTO_JOB=1 PDB=1 ninja -C <BINARY_DIR>
     INSTALL_COMMAND ${EXEC} ninja -C <BINARY_DIR> install
     LOG_DOWNLOAD 1 LOG_UPDATE 1 LOG_CONFIGURE 1 LOG_BUILD 1 LOG_INSTALL 1
 )
 
-set(BACKUP_RESTORE_LIB ${CMAKE_CURRENT_BINARY_DIR}/mediaxx_ffmpeg_help-prefix/src/backup_restore.sh)
+set(BACKUP_RESTORE_LIB ${CMAKE_CURRENT_BINARY_DIR}/mediaxx-prefix/src/backup_restore.sh)
 file(WRITE ${BACKUP_RESTORE_LIB}
 "#!/bin/bash
 
@@ -64,16 +65,16 @@ reset 'libswresample.pc'
 reset 'libswscale.pc'
 ")
 
-# ExternalProject_Add_Step(mediaxx_ffmpeg_help back-lib-pkgconfig
-#     DEPENDEES update
-#     COMMAND chmod 755 ${BACKUP_RESTORE_LIB}
+ExternalProject_Add_Step(mediaxx back-lib-pkgconfig
+    DEPENDEES update
+    COMMAND chmod 755 ${BACKUP_RESTORE_LIB}
 
-#     COMMAND ${BACKUP_RESTORE_LIB} ${MINGW_INSTALL_PREFIX}/lib/
-#     COMMENT "backup  restore"
-#     LOG 1
-# )
+    COMMAND ${BACKUP_RESTORE_LIB} ${MINGW_INSTALL_PREFIX}/lib/
+    COMMENT "backup  restore"
+    LOG 1
+)
 
-set(BACKUP_LIB ${CMAKE_CURRENT_BINARY_DIR}/mediaxx_ffmpeg_help-prefix/src/backup.sh)
+set(BACKUP_LIB ${CMAKE_CURRENT_BINARY_DIR}/mediaxx-prefix/src/backup.sh)
 file(WRITE ${BACKUP_LIB}
 "#!/bin/bash
 
@@ -82,7 +83,10 @@ lib_path=$1
 cd $lib_path
 back_path=$lib_path/ffmpeg-backup/
 
-rm -rf $back_path
+if [[ -e $back_path ]]; then
+    exit 0
+fi
+
 mkdir $back_path
 
 mv avfilter.lib     $back_path/
@@ -110,7 +114,7 @@ reset 'libswresample.pc'
 reset 'libswscale.pc'
 ")
 
-ExternalProject_Add_Step(mediaxx_ffmpeg_help rename-lib-pkgconfig
+ExternalProject_Add_Step(mediaxx rename-lib-pkgconfig
     DEPENDEES install
     COMMAND chmod 755 ${BACKUP_LIB}
 
@@ -119,7 +123,7 @@ ExternalProject_Add_Step(mediaxx_ffmpeg_help rename-lib-pkgconfig
     LOG 1
 )
 
-ExternalProject_Add_Step(mediaxx_ffmpeg_help copy-binary
+ExternalProject_Add_Step(mediaxx copy-binary
     DEPENDEES install
 
     COMMAND ${CMAKE_COMMAND} -E copy <BINARY_DIR>/libmediaxx.dll           ${CMAKE_SOURCE_DIR}/output/libmediaxx.dll
@@ -128,7 +132,7 @@ ExternalProject_Add_Step(mediaxx_ffmpeg_help copy-binary
     COMMENT "Copying ffmpeg binaries and manual"
 )
 
-# ExternalProject_Add_Step(mediaxx_ffmpeg_help remove-ffmpeg
+# ExternalProject_Add_Step(mediaxx remove-ffmpeg
 #     DEPENDEES install
 #     COMMAND ${CMAKE_COMMAND} -E remove ${MINGW_INSTALL_PREFIX}/lib/avfilter.lib
 #     COMMAND ${CMAKE_COMMAND} -E remove ${MINGW_INSTALL_PREFIX}/lib/avutil.lib
@@ -139,4 +143,4 @@ ExternalProject_Add_Step(mediaxx_ffmpeg_help copy-binary
 #     COMMAND ${CMAKE_COMMAND} -E remove ${MINGW_INSTALL_PREFIX}/lib/swscale.lib
 # )
 
-# cleanup(mediaxx_ffmpeg_help rename-lib-pkgconfig)
+# cleanup(mediaxx rename-lib-pkgconfig)
