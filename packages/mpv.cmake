@@ -78,14 +78,8 @@ ExternalProject_Add(mpv
     LOG_DOWNLOAD 1 LOG_UPDATE 1 LOG_CONFIGURE 1 LOG_BUILD 1 LOG_INSTALL 1
 )
 
-ExternalProject_Add_Step(mpv strip-binary
-    DEPENDEES build
-    ${mpv_add_debuglink}
-    COMMENT "Stripping mpv binaries"
-)
-
 ExternalProject_Add_Step(mpv copy-binary
-    DEPENDEES strip-binary
+    DEPENDEES build
     COMMAND ${CMAKE_COMMAND} -E copy <BINARY_DIR>/libmpv-2.dll               ${CMAKE_SOURCE_DIR}/output/libmpv-2.dll
     COMMAND ${CMAKE_COMMAND} -E copy <BINARY_DIR>/libmpv.dll.a               ${CMAKE_SOURCE_DIR}/output/libmpv.dll.a
     COMMAND ${CMAKE_COMMAND} -E copy <SOURCE_DIR>/include/mpv/client.h       ${CMAKE_SOURCE_DIR}/output/include/mpv/client.h
@@ -93,6 +87,8 @@ ExternalProject_Add_Step(mpv copy-binary
     COMMAND ${CMAKE_COMMAND} -E copy <SOURCE_DIR>/include/mpv/render.h       ${CMAKE_SOURCE_DIR}/output/include/mpv/render.h
     COMMAND ${CMAKE_COMMAND} -E copy <SOURCE_DIR>/include/mpv/render_gl.h    ${CMAKE_SOURCE_DIR}/output/include/mpv/render_gl.h
     
+    COMMAND ${CMAKE_SOURCE_DIR}/clang_root/bin/llvm-strip --strip-all        ${CMAKE_SOURCE_DIR}/output/libmpv-2.dll
+
     COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_SOURCE_DIR}/help/create_comm_syms.sh    ${CMAKE_SOURCE_DIR}/output/create_comm_syms.sh
 
     # d3dcompiler_43.dll

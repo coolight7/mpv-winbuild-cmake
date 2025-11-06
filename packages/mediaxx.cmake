@@ -129,6 +129,8 @@ ExternalProject_Add_Step(mediaxx copy-binary
     COMMAND ${CMAKE_COMMAND} -E copy <BINARY_DIR>/libmediaxx.dll           ${CMAKE_SOURCE_DIR}/output/libmediaxx.dll
     COMMAND ${CMAKE_COMMAND} -E copy <BINARY_DIR>/libmediaxx.dll.a         ${CMAKE_SOURCE_DIR}/output/libmediaxx.dll.a
 
+    COMMAND ${CMAKE_SOURCE_DIR}/clang_root/bin/llvm-strip --strip-all      ${CMAKE_SOURCE_DIR}/output/libmediaxx.dll
+
     COMMENT "Copying ffmpeg binaries and manual"
 )
 
