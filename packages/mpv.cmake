@@ -1,7 +1,6 @@
 ExternalProject_Add(mpv
     DEPENDS
-        # ffmpeg
-        mediaxx
+        ffmpeg
     GIT_REPOSITORY https://github.com/mpv-player/mpv.git
     GIT_TAG v0.40.0
     SOURCE_DIR ${SOURCE_LOCATION}
@@ -11,10 +10,7 @@ ExternalProject_Add(mpv
         --prefix=${MINGW_INSTALL_PREFIX}
         --libdir=${MINGW_INSTALL_PREFIX}/lib
         --cross-file=${MESON_CROSS}
-        --prefer-static
-        --default-library=shared
-        -Dc_link_args='-lmediaxx ${CMAKE_CURRENT_SOURCE_DIR}/mpv-export.def'
-        -Dcpp_link_args='-lmediaxx ${CMAKE_CURRENT_SOURCE_DIR}/mpv-export.def'
+        --default-library=static
         -Dbuildtype=release
         -Db_lto=true
         -Db_lto_mode=default
@@ -74,20 +70,20 @@ ExternalProject_Add(mpv
 
         -Dc_args='-Wno-error=int-conversion'
     BUILD_COMMAND ${EXEC} LTO_JOB=1 PDB=1 ninja -C <BINARY_DIR>
-    INSTALL_COMMAND ""
+    INSTALL_COMMAND ${EXEC} ninja -C <BINARY_DIR> install
     LOG_DOWNLOAD 1 LOG_UPDATE 1 LOG_CONFIGURE 1 LOG_BUILD 1 LOG_INSTALL 1
 )
 
 ExternalProject_Add_Step(mpv copy-binary
     DEPENDEES build
-    COMMAND ${CMAKE_COMMAND} -E copy <BINARY_DIR>/libmpv-2.dll               ${CMAKE_SOURCE_DIR}/output/libmpv-2.dll
-    COMMAND ${CMAKE_COMMAND} -E copy <BINARY_DIR>/libmpv.dll.a               ${CMAKE_SOURCE_DIR}/output/libmpv.dll.a
-    COMMAND ${CMAKE_COMMAND} -E copy <SOURCE_DIR>/include/mpv/client.h       ${CMAKE_SOURCE_DIR}/output/include/mpv/client.h
-    COMMAND ${CMAKE_COMMAND} -E copy <SOURCE_DIR>/include/mpv/stream_cb.h    ${CMAKE_SOURCE_DIR}/output/include/mpv/stream_cb.h
-    COMMAND ${CMAKE_COMMAND} -E copy <SOURCE_DIR>/include/mpv/render.h       ${CMAKE_SOURCE_DIR}/output/include/mpv/render.h
-    COMMAND ${CMAKE_COMMAND} -E copy <SOURCE_DIR>/include/mpv/render_gl.h    ${CMAKE_SOURCE_DIR}/output/include/mpv/render_gl.h
+    # COMMAND ${CMAKE_COMMAND} -E copy <BINARY_DIR>/libmpv-2.dll               ${CMAKE_SOURCE_DIR}/output/libmpv-2.dll
+    # COMMAND ${CMAKE_COMMAND} -E copy <BINARY_DIR>/libmpv.dll.a               ${CMAKE_SOURCE_DIR}/output/libmpv.dll.a
+    COMMAND ${CMAKE_COMMAND} -E copy <SOURCE_DIR>/include/mpv/client.h         ${CMAKE_SOURCE_DIR}/output/include/mpv/client.h
+    COMMAND ${CMAKE_COMMAND} -E copy <SOURCE_DIR>/include/mpv/stream_cb.h      ${CMAKE_SOURCE_DIR}/output/include/mpv/stream_cb.h
+    COMMAND ${CMAKE_COMMAND} -E copy <SOURCE_DIR>/include/mpv/render.h         ${CMAKE_SOURCE_DIR}/output/include/mpv/render.h
+    COMMAND ${CMAKE_COMMAND} -E copy <SOURCE_DIR>/include/mpv/render_gl.h      ${CMAKE_SOURCE_DIR}/output/include/mpv/render_gl.h
     
-    COMMAND ${CMAKE_SOURCE_DIR}/clang_root/bin/llvm-strip --strip-all        ${CMAKE_SOURCE_DIR}/output/libmpv-2.dll
+    # COMMAND ${CMAKE_SOURCE_DIR}/clang_root/bin/llvm-strip --strip-all        ${CMAKE_SOURCE_DIR}/output/libmpv-2.dll
 
     COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_SOURCE_DIR}/help/create_comm_syms.sh    ${CMAKE_SOURCE_DIR}/output/create_comm_syms.sh
 
@@ -95,13 +91,27 @@ ExternalProject_Add_Step(mpv copy-binary
     COMMENT "Copying mpv binaries and manual"
 )
 
-ExternalProject_Add_Step(mpv gendef
-    DEPENDEES copy-binary
-    COMMAND chmod 755 ${CMAKE_SOURCE_DIR}/output/create_comm_syms.sh
-    COMMAND ${CMAKE_SOURCE_DIR}/output/create_comm_syms.sh
-    COMMENT ""
-    LOG 1
-)
+# set(LIBMPV_PC ${MINGW_INSTALL_PREFIX}/lib/pkgconfig/libmpv.pc)
+# file(WRITE ${LIBMPV_PC}
+# "prefix=${MINGW_INSTALL_PREFIX}
+# includedir=\${prefix}/include
+# libdir=\${prefix}/lib
+
+# Name: libmpv
+# Description: libmpv
+# Version: 0.40.0
+# Requires: 
+# Libs: -L\${libdir} -lmpv    -lplacebo -lshlwapi -lversion   -lavfilter -lavcodec -lavutil -lavdevice -lavformat -lswresample -lswscale   -larchive -lz -lbz2 -llzma -llzo2 -lzstd -lbcrypt -lcrypto -liconv -lcharset -lxml2 -lpthread -liconv -lbcrypt -lz   -ljpeg   -luchardet -lstdc++   -lm
+# Cflags: -I\${includedir}/mpv -DPL_STATIC
+# ")
+
+# # ExternalProject_Add_Step(mpv gendef
+# #     DEPENDEES copy-binary
+# #     COMMAND chmod 755 ${CMAKE_SOURCE_DIR}/output/create_comm_syms.sh
+# #     COMMAND ${CMAKE_SOURCE_DIR}/output/create_comm_syms.sh
+# #     COMMENT ""
+# #     LOG 1
+# # )
 
 force_rebuild_git(mpv)
 force_meson_configure(mpv)

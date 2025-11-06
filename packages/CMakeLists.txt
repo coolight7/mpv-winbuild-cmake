@@ -1,5 +1,6 @@
 set_property(DIRECTORY PROPERTY EP_STEP_TARGETS download)
 include(${PROJECT_SOURCE_DIR}/cmake/packages_check.cmake)
+# 注意依赖顺序
 list(APPEND ep
     gmp
     xz
@@ -86,10 +87,10 @@ list(APPEND ep
     # libaribcaption
     libsixel
     ffmpeg
-    mediaxx
     mpv
     mpv-release
     mpv-packaging
+    mediaxx
     curl
     flac
     opusfile

@@ -36,6 +36,6 @@ fi
 cd build_x86_64_mpv/
 
 # 编译中途失败了修好直接再运行这一句就可以了
-ninja mpv
+ninja mediaxx
 
 # 如果编译失败了，可以直接进入 build_x86_64_mpv/packages/对应包/src/xxx-build/ 内手动按 xxx.cmake 编译 make && make install
