@@ -26,6 +26,14 @@ ExternalProject_Add(opus
     LOG_DOWNLOAD 1 LOG_UPDATE 1 LOG_CONFIGURE 1 LOG_BUILD 1 LOG_INSTALL 1
 )
 
+ExternalProject_Add_Step(opus remove-dep-dllexport
+    DEPENDEES update
+
+    COMMAND sed -i "/^#   define OPUS_EXPORT/ s|__declspec(dllexport)| |"   ${CMAKE_SOURCE_DIR}/src_packages_mpv/opus/include/opus_defines.h
+
+    COMMENT ""
+)
+
 force_rebuild_git(opus)
 force_meson_configure(opus)
 cleanup(opus install)

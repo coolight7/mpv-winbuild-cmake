@@ -86,7 +86,7 @@ ExternalProject_Add_Step(mpv copy-binary
     # COMMAND ${CMAKE_SOURCE_DIR}/clang_root/bin/llvm-strip --strip-all        ${CMAKE_SOURCE_DIR}/output/libmpv-2.dll
 
     COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_SOURCE_DIR}/help/create_comm_syms.sh    ${CMAKE_SOURCE_DIR}/output/create_comm_syms.sh
-
+    COMMAND chmod 755 ${CMAKE_SOURCE_DIR}/output/create_comm_syms.sh
     # d3dcompiler_43.dll
     COMMENT "Copying mpv binaries and manual"
 )

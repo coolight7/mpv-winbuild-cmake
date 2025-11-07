@@ -36,6 +36,14 @@ ExternalProject_Add(libplacebo
     LOG_DOWNLOAD 1 LOG_UPDATE 1 LOG_CONFIGURE 1 LOG_BUILD 1 LOG_INSTALL 1
 )
 
+ExternalProject_Add_Step(libplacebo remove-dep-dllexport
+    DEPENDEES update
+
+    COMMAND sed -i "/^#  define PL_API/ s|__declspec(dllexport)| |"         ${CMAKE_SOURCE_DIR}/src_packages_mpv/libplacebo/src/include/libplacebo/config.h.in
+
+    COMMENT ""
+)
+
 force_rebuild_git(libplacebo)
 force_meson_configure(libplacebo)
 cleanup(libplacebo install)

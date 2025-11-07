@@ -22,6 +22,8 @@ ExternalProject_Add(mediaxx
     LOG_DOWNLOAD 1 LOG_UPDATE 1 LOG_CONFIGURE 1 LOG_BUILD 1 LOG_INSTALL 1
 )
 
+# 如果最终导出符号比指定的多，可以根据符号推断是哪个库，然后 grep "dllexport" ${package-dir} 查找是哪个文件定义的导出声明，去除并重新编译依赖它的库即可
+
 ExternalProject_Add_Step(mediaxx copy-binary
     DEPENDEES install
 
