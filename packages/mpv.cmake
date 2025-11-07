@@ -53,9 +53,9 @@ ExternalProject_Add(mpv
 
         -Dwasapi=enabled
 
-        -Dvulkan=enabled
-        -Dshaderc=enabled
-        -Dspirv-cross=enabled
+        -Dvulkan=disabled
+        # -Dshaderc=enabled
+        # -Dspirv-cross=enabled
         -Dd3d11=enabled
         -Ddirect3d=disabled
         -Degl-angle=enabled

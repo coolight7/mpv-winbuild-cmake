@@ -169,6 +169,8 @@ ExternalProject_Add(ffmpeg
         --enable-filter=hwupload
         --enable-filter=copy
         --enable-filter=showwavespic
+        --enable-filter=areverse,reverse
+        --enable-filter=silencedetect,silenceremove
         --enable-filter=acompressor
         --enable-filter=alimiter
         --enable-filter=atrim
@@ -235,10 +237,11 @@ ExternalProject_Add(ffmpeg
         --disable-libmysofa
         --disable-libfontconfig
 
-	    --enable-vulkan
-        --enable-vulkan-static
-        --enable-libplacebo
-        --enable-libshaderc
+	    --disable-vulkan
+        --disable-vulkan-static
+        --disable-libshaderc
+        --disable-libplacebo
+        
         --enable-network
         --enable-amf
         --enable-dxva2
@@ -273,7 +276,7 @@ ExternalProject_Add(ffmpeg
         ${ffmpeg_uavs3d_cmd}
         ${ffmpeg_cuda}
         --extra-cflags='-Wno-error=int-conversion -fPIC'
-        "--extra-libs='${ffmpeg_extra_libs} -lm -lshlwapi -lpthread -lcfgmgr32'"
+        "--extra-libs='${ffmpeg_extra_libs} -lm'"
     BUILD_COMMAND ${MAKE}
     INSTALL_COMMAND ${MAKE} install
     LOG_DOWNLOAD 1 LOG_UPDATE 1 LOG_CONFIGURE 1 LOG_BUILD 1 LOG_INSTALL 1
