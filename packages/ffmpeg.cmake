@@ -244,12 +244,14 @@ ExternalProject_Add(ffmpeg
         
         --enable-network
         --enable-amf
-        --enable-dxva2
-        --enable-libuavs3d
+        --enable-d3d12va
         --enable-d3d11va
-        --enable-openal
-        --enable-opengl
         --enable-vaapi
+        --disable-dxva2
+        --disable-openal
+        --disable-opengl
+        ${ffmpeg_cuda}
+        --enable-libuavs3d
         --enable-libass
         --enable-libfreetype
         --enable-libfribidi
@@ -274,7 +276,6 @@ ExternalProject_Add(ffmpeg
         --enable-lzma
         ${ffmpeg_davs2_cmd}
         ${ffmpeg_uavs3d_cmd}
-        ${ffmpeg_cuda}
         --extra-cflags='-Wno-error=int-conversion -fPIC'
         "--extra-libs='${ffmpeg_extra_libs} -lm'"
     BUILD_COMMAND ${MAKE}
