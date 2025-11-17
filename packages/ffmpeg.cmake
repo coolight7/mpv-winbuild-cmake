@@ -82,6 +82,10 @@ ExternalProject_Add(ffmpeg
         --ranlib=${TARGET_ARCH}-llvm-ranlib
         --stdc=c23
         --stdcxx=c++23
+        --extra-cflags='${CFLAGS} -Wno-error=int-conversion -ffunction-sections -fdata-sections'
+        --extra-cxxflags='${CXXFLAGS} -ffunction-sections -fdata-sections'
+        --extra-ldflags='${LDFLAGS} '
+        --extra-libs='${ffmpeg_extra_libs} -lm'
 
         --enable-gpl
         --enable-nonfree
@@ -97,7 +101,7 @@ ExternalProject_Add(ffmpeg
         --enable-inline-asm
         --enable-lto=full
         --enable-optimizations
-        --enable-small
+        --enable-hardcoded-tables
 
         --disable-gray
         --disable-swscale-alpha
@@ -261,8 +265,6 @@ ExternalProject_Add(ffmpeg
         --enable-lzma
         ${ffmpeg_davs2_cmd}
         ${ffmpeg_uavs3d_cmd}
-        --extra-cflags='-Wno-error=int-conversion -fPIC'
-        "--extra-libs='${ffmpeg_extra_libs} -lm'"
     BUILD_COMMAND ${MAKE}
     INSTALL_COMMAND ${MAKE} install
     LOG_DOWNLOAD 1 LOG_UPDATE 1 LOG_CONFIGURE 1 LOG_BUILD 1 LOG_INSTALL 1

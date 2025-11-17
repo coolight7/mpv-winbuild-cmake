@@ -11,12 +11,13 @@ ExternalProject_Add(mediaxx
         "-DCMAKE_INSTALL_PREFIX=${MINGW_INSTALL_PREFIX}"
         "-DCMAKE_FIND_ROOT_PATH=${MINGW_INSTALL_PREFIX}"
         -DBUILD_SHARED_LIBS=ON
+        -DCMAKE_INTERPROCEDURAL_OPTIMIZATION=ON
         -DSTATIC_LINK_FFMPEG=ON
         -DSTATIC_LINK_LIBMPV=ON
         -DEXPORT_ALL_SYMBOL=OFF
-        -DCMAKE_C_FLAGS=' -fvisibility=hidden '
-        -DCMAKE_CXX_FLAGS=' -fvisibility=hidden '
-        -DCMAKE_SHARED_LINKER_FLAGS=' -Wl,--exclude-all-symbols '
+        -DCMAKE_C_FLAGS=' -fvisibility=hidden -ffunction-sections -fdata-sections -flto'
+        -DCMAKE_CXX_FLAGS=' -fvisibility=hidden -ffunction-sections -fdata-sections -flto'
+        -DCMAKE_SHARED_LINKER_FLAGS=' -Wl,-O3 -Wl,--exclude-all-symbols -Wl,--gc-sections -flto'
     BUILD_COMMAND ${EXEC} LTO_JOB=1 PDB=1 ninja -C <BINARY_DIR>
     INSTALL_COMMAND ${EXEC} ninja -C <BINARY_DIR> install
     LOG_DOWNLOAD 1 LOG_UPDATE 1 LOG_CONFIGURE 1 LOG_BUILD 1 LOG_INSTALL 1

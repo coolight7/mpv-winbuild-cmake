@@ -11,6 +11,7 @@ ExternalProject_Add(mpv
         --libdir=${MINGW_INSTALL_PREFIX}/lib
         --cross-file=${MESON_CROSS}
         --default-library=static
+        -Dc_args='-Wno-error=int-conversion -ffunction-sections -fdata-sections'
         -Dbuildtype=release
         -Db_lto=true
         -Db_lto_mode=default
@@ -68,7 +69,6 @@ ExternalProject_Add(mpv
         -Dd3d-hwaccel=enabled
         -Dd3d9-hwaccel=disabled
 
-        -Dc_args='-Wno-error=int-conversion'
     BUILD_COMMAND ${EXEC} LTO_JOB=1 PDB=1 ninja -C <BINARY_DIR>
     INSTALL_COMMAND ${EXEC} ninja -C <BINARY_DIR> install
     LOG_DOWNLOAD 1 LOG_UPDATE 1 LOG_CONFIGURE 1 LOG_BUILD 1 LOG_INSTALL 1
