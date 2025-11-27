@@ -10,7 +10,7 @@ ExternalProject_Add(ffmpeg
         openssl
         # libssh
         # libsrt
-        libass
+        # libass
         # libbluray
         # libdvdnav
         # libdvdread
@@ -214,6 +214,10 @@ ExternalProject_Add(ffmpeg
         --disable-libaom
         --disable-libmysofa
         --disable-libfontconfig
+        --disable-libharfbuzz
+        --disable-libass
+        --disable-libfreetype
+        --disable-libfribidi
         
         --enable-network
         --enable-amf
@@ -242,10 +246,6 @@ ExternalProject_Add(ffmpeg
 
         --disable-sdl2
         --enable-libuavs3d
-        --enable-libass
-        --enable-libfreetype
-        --enable-libfribidi
-        --enable-libharfbuzz
         --enable-lcms2
         --enable-libopus
         --enable-libsoxr

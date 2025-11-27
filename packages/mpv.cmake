@@ -21,6 +21,7 @@ ExternalProject_Add(mpv
         -Dlibmpv=true
         -Dcplayer=false
         -Dgpl=true
+        -Dbuild-date=false
         
         -Dhtml-build=disabled
         -Dmanpage-build=disabled
@@ -34,7 +35,7 @@ ExternalProject_Add(mpv
         -Ddvdnav=disabled
         -Dvapoursynth=disabled
         -Duchardet=disabled
-        -Diconv=disabled
+        -Diconv=enabled
         -Dlibarchive=enabled
         -Drubberband=enabled
         -Dlcms2=enabled
