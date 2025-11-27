@@ -176,7 +176,6 @@ ExternalProject_Add(ffmpeg
         --enable-filter=pan
         --enable-filter=stereowiden
         --enable-filter=stereotools
-        --enable-filter=rubberband
         --enable-filter=volume
         --enable-filter=volumedetect
         --enable-filter=null,nullsink,nullsrc,anull,anullsink,anullsrc
@@ -251,7 +250,6 @@ ExternalProject_Add(ffmpeg
         --enable-libsoxr
         --enable-libvorbis
         --enable-libbs2b
-        --enable-librubberband
         --enable-libvpx
         --enable-libwebp
         --enable-libdav1d

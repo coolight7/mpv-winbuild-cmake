@@ -20,7 +20,7 @@ ExternalProject_Add(mpv
         -Doptimization=3
         -Dlibmpv=true
         -Dcplayer=false
-        -Dgpl=true
+        -Dgpl=false
         -Dbuild-date=false
         
         -Dhtml-build=disabled
