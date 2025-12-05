@@ -156,7 +156,6 @@ ExternalProject_Add(ffmpeg
         --enable-filter=hwdownload
         --enable-filter=hwupload
         --enable-filter=copy
-        --enable-filter=showwavespic
         --enable-filter=areverse,reverse
         --enable-filter=silencedetect,silenceremove
         --enable-filter=acompressor
@@ -185,6 +184,7 @@ ExternalProject_Add(ffmpeg
         --enable-filter=aresample
         --enable-filter=sinc
         --enable-filter=sine
+        --enable-filter=vibrato,tremolo
 
         # protocols
         --disable-protocols
