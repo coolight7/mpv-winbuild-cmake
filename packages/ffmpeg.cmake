@@ -61,7 +61,7 @@ ExternalProject_Add(ffmpeg
         # vapoursynth
         # libsdl2
     GIT_REPOSITORY https://github.com/FFmpeg/FFmpeg.git
-    GIT_TAG n8.0
+    GIT_TAG n8.0.1
     SOURCE_DIR ${SOURCE_LOCATION}
     GIT_CLONE_FLAGS "--sparse"
     GIT_CLONE_POST_COMMAND "sparse-checkout set --no-cone /* !tests/ref/fate"
