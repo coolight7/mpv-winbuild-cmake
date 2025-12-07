@@ -1,1 +1,2 @@
-docker cp ./ ff53b9e81bf2:/home/coolight/program/media/mpv-winbuild-cmake/
+target_home_dir=$(pwd)
+docker cp ./ ff53b9e81bf2:$target_home_dir
