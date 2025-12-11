@@ -1,4 +1,6 @@
 rm -rf ./output/
 mkdir output
-docker cp ff53b9e81bf2:/home/coolight/program/media/mpv-winbuild-cmake/output/ ./output/
+
+target_home_dir=$(pwd)
+docker cp ff53b9e81bf2:$target_home_dir/output/ ./output/
 

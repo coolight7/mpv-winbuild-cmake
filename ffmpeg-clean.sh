@@ -1,3 +1,13 @@
+rm -rf build_x86_64/x86_64-w64-mingw32/lib/ffmpeg-backup
+
+rm -rf build_x86_64/x86_64-w64-mingw32/include/libavcodec/
+rm -rf build_x86_64/x86_64-w64-mingw32/include/libavfilter/
+rm -rf build_x86_64/x86_64-w64-mingw32/include/libavdevice/
+rm -rf build_x86_64/x86_64-w64-mingw32/include/libavformat/
+rm -rf build_x86_64/x86_64-w64-mingw32/include/libavutil/
+rm -rf build_x86_64/x86_64-w64-mingw32/include/libswscale/
+rm -rf build_x86_64/x86_64-w64-mingw32/include/libswresample/
+
 rm build_x86_64/x86_64-w64-mingw32/bin/avcodec*
 rm build_x86_64/x86_64-w64-mingw32/bin/avdevice*
 rm build_x86_64/x86_64-w64-mingw32/bin/avfilter*

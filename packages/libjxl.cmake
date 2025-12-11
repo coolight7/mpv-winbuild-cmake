@@ -46,11 +46,19 @@ ExternalProject_Add(libjxl
         -DJPEGXL_FORCE_SYSTEM_LCMS2=ON
         -DJPEGXL_FORCE_SYSTEM_BROTLI=ON
         -DJPEGXL_FORCE_SYSTEM_HWY=ON
-        -DCMAKE_CXX_FLAGS='${CMAKE_CXX_FLAGS} ${libjxl_unaligned_vector}'
-        -DCMAKE_C_FLAGS='${CMAKE_C_FLAGS}     ${libjxl_unaligned_vector}'
+        -DCMAKE_CXX_FLAGS='${CMAKE_CXX_FLAGS} -DJXL_STATIC_DEFINE ${libjxl_unaligned_vector}'
+        -DCMAKE_C_FLAGS='${CMAKE_C_FLAGS}     -DJXL_STATIC_DEFINE ${libjxl_unaligned_vector}'
     BUILD_COMMAND ${EXEC} ninja -C <BINARY_DIR>
     INSTALL_COMMAND ${EXEC} ninja -C <BINARY_DIR> install
     LOG_DOWNLOAD 1 LOG_UPDATE 1 LOG_CONFIGURE 1 LOG_BUILD 1 LOG_INSTALL 1
+)
+
+ExternalProject_Add_Step(libjxl remove-dep-dllexport
+    DEPENDEES install
+
+    COMMAND sed -i "/^#      define JXL_EXPORT/ s|__declspec(dllexport)| |"   ${MINGW_INSTALL_PREFIX}/include/jxl/jxl_export.h
+
+    COMMENT ""
 )
 
 force_rebuild_git(libjxl)

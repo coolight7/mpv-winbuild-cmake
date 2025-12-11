@@ -1,5 +1,6 @@
 ExternalProject_Add(ffmpeg
     DEPENDS
+        angle-headers
         amf-headers
         avisynth-headers
         ${nvcodec_headers}
@@ -26,6 +27,7 @@ ExternalProject_Add(ffmpeg
         fontconfig
         harfbuzz
         vulkan
+        spirv-cross
         opus
         speex
         vorbis
@@ -49,8 +51,18 @@ ExternalProject_Add(ffmpeg
         rubberband
         libva
         openal-soft
+        fribidi
+        
+        # libmpv 放一起可能可以提供 ffmpeg autodetect，然后再控制导出符号给 libmpv 链接共享 ---
+        libarchive
+        libjpeg
+        # luajit
+        uchardet
+        # mujs
+        # vapoursynth
+        # libsdl2
     GIT_REPOSITORY https://github.com/FFmpeg/FFmpeg.git
-    GIT_TAG n8.0
+    GIT_TAG n8.0.1
     SOURCE_DIR ${SOURCE_LOCATION}
     GIT_CLONE_FLAGS "--sparse"
     GIT_CLONE_POST_COMMAND "sparse-checkout set --no-cone /* !tests/ref/fate"
@@ -71,34 +83,37 @@ ExternalProject_Add(ffmpeg
         --ranlib=${TARGET_ARCH}-llvm-ranlib
         --stdc=c23
         --stdcxx=c++23
+        --extra-cflags='${CFLAGS} -Wno-error=int-conversion -ffunction-sections -fdata-sections'
+        --extra-cxxflags='${CXXFLAGS} -ffunction-sections -fdata-sections'
+        --extra-ldflags='${LDFLAGS} '
+        --extra-libs='${ffmpeg_extra_libs} -lm'
 
         --enable-gpl
         --enable-nonfree
         --enable-version3
 
         --disable-debug
-        --enable-shared
-        --disable-static
+        --disable-shared
+        --enable-static
         --enable-stripping
         --enable-runtime-cpudetect
         --enable-pic
         --enable-asm 
         --enable-inline-asm
-        --enable-lto
-        --enable-lto=thin
-        --enable-hwaccels
+        --enable-lto=full
         --enable-optimizations
+        --enable-hardcoded-tables
 
         --disable-doc
         --disable-htmlpages
         --disable-manpages
         --disable-podpages
         --disable-txtpages
-	    --disable-xmm-clobber-test
-	    --disable-neon-clobber-test
+        --disable-xmm-clobber-test
+        --disable-neon-clobber-test
         --disable-version-tracking
-        --enable-gray
-        --enable-swscale-alpha
+        --disable-gray
+        --disable-swscale-alpha
         
         --disable-vdpau
         --disable-appkit
@@ -108,8 +123,6 @@ ExternalProject_Add(ffmpeg
         
         # program
         --disable-programs
-        --enable-ffmpeg
-        --enable-ffprobe
 
         --enable-avutil
         --enable-avcodec
@@ -119,6 +132,7 @@ ExternalProject_Add(ffmpeg
         --enable-swscale
         --enable-swresample
 
+        --enable-hwaccels
         --enable-bsfs
 
         # protocols
@@ -153,10 +167,10 @@ ExternalProject_Add(ffmpeg
         --enable-parsers
 
         --enable-filters
-	    --disable-filter=afftdn
-	    --disable-filter=afwtdn
-	    --disable-filter=anlmdn
-	    --disable-filter=arnndn
+        --disable-filter=afftdn
+        --disable-filter=afwtdn
+        --disable-filter=anlmdn
+        --disable-filter=arnndn
 
         --enable-indevs
         --enable-outdevs
@@ -185,44 +199,51 @@ ExternalProject_Add(ffmpeg
         --enable-libx264
         --enable-libx265
 
-	    --enable-vulkan
-        --enable-vulkan-static  
         --enable-network
         --enable-amf
-        --enable-dxva2
-        --enable-libuavs3d
+        --enable-libvpl
+        --enable-d3d12va
         --enable-d3d11va
-        --enable-openal
-        --enable-opengl
-        --enable-vaapi
-        --enable-libass
-        --enable-libfreetype
-        --enable-libfribidi
-        --enable-libfontconfig
-        --enable-libharfbuzz
+        --enable-ffnvcodec
+        --enable-cuda
+        --enable-cuda-llvm
+        --enable-cuvid
+        --enable-nvdec
+        --enable-nvenc
+        --disable-vulkan
+        --disable-vulkan-static
+        --disable-libshaderc
+        --disable-libplacebo
+        --disable-dxva2
+        --disable-openal
+        --disable-opengl
+        --disable-vaapi
+        --disable-vdpau
+        --disable-appkit
+        --disable-videotoolbox
+        --disable-audiotoolbox
+        --disable-linux-perf
+
+        --disable-sdl2
+        --enable-libuavs3d
         --enable-lcms2
         --enable-libopus
         --enable-libsoxr
         --enable-libvorbis
         --enable-libbs2b
-        --enable-librubberband
         --enable-libvpx
         --enable-libwebp
         --enable-libdav1d
         --enable-libzimg
         --enable-openssl
         --enable-libxml2
-	    --enable-iconv
-        --enable-libmysofa
-        --enable-libvpl
         --enable-libjxl
-        --enable-libplacebo
-        --enable-libshaderc
+        --enable-iconv
+        --enable-zlib
+        --enable-bzlib
+        --enable-lzma
         ${ffmpeg_davs2_cmd}
         ${ffmpeg_uavs3d_cmd}
-        ${ffmpeg_cuda}
-        --extra-cflags='-Wno-error=int-conversion'
-        "--extra-libs='${ffmpeg_extra_libs} -lm -lshlwapi -lpthread -lcfgmgr32'"
     BUILD_COMMAND ${MAKE}
     INSTALL_COMMAND ${MAKE} install
     LOG_DOWNLOAD 1 LOG_UPDATE 1 LOG_CONFIGURE 1 LOG_BUILD 1 LOG_INSTALL 1
@@ -230,45 +251,25 @@ ExternalProject_Add(ffmpeg
 
 ExternalProject_Add_Step(ffmpeg copy-binary
     DEPENDEES install
-    COMMAND ${CMAKE_COMMAND} -E copy <BINARY_DIR>/ffmpeg.exe                            ${CMAKE_CURRENT_BINARY_DIR}/ffmpeg-package/ffmpeg.exe
-    COMMAND ${CMAKE_COMMAND} -E copy <BINARY_DIR>/ffprobe.exe                           ${CMAKE_CURRENT_BINARY_DIR}/ffmpeg-package/ffprobe.exe
+    COMMAND ${CMAKE_COMMAND} -E copy ${MINGW_INSTALL_PREFIX}/lib/libavfilter.a           ${CMAKE_SOURCE_DIR}/output/libavfilter.a
+    COMMAND ${CMAKE_COMMAND} -E copy ${MINGW_INSTALL_PREFIX}/lib/libavutil.a             ${CMAKE_SOURCE_DIR}/output/libavutil.a
+    COMMAND ${CMAKE_COMMAND} -E copy ${MINGW_INSTALL_PREFIX}/lib/libavdevice.a           ${CMAKE_SOURCE_DIR}/output/libavdevice.a
+    COMMAND ${CMAKE_COMMAND} -E copy ${MINGW_INSTALL_PREFIX}/lib/libavcodec.a            ${CMAKE_SOURCE_DIR}/output/libavcodec.a
+    COMMAND ${CMAKE_COMMAND} -E copy ${MINGW_INSTALL_PREFIX}/lib/libavformat.a           ${CMAKE_SOURCE_DIR}/output/libavformat.a
+    COMMAND ${CMAKE_COMMAND} -E copy ${MINGW_INSTALL_PREFIX}/lib/libswresample.a         ${CMAKE_SOURCE_DIR}/output/libswresample.a
+    COMMAND ${CMAKE_COMMAND} -E copy ${MINGW_INSTALL_PREFIX}/lib/libswscale.a            ${CMAKE_SOURCE_DIR}/output/libswscale.a
 
-    # COMMAND ${CMAKE_COMMAND} -E copy <BINARY_DIR>/libavfilter/libavfilter.lib             ${CMAKE_CURRENT_BINARY_DIR}/ffmpeg-package/libavfilter.lib
-    # COMMAND ${CMAKE_COMMAND} -E copy <BINARY_DIR>/libavutil/libavutil.lib                 ${CMAKE_CURRENT_BINARY_DIR}/ffmpeg-package/libavutil.lib
-    # COMMAND ${CMAKE_COMMAND} -E copy <BINARY_DIR>/libavdevice/libavdevice.lib             ${CMAKE_CURRENT_BINARY_DIR}/ffmpeg-package/libavdevice.lib
-    # COMMAND ${CMAKE_COMMAND} -E copy <BINARY_DIR>/libavcodec/libavcodec.lib               ${CMAKE_CURRENT_BINARY_DIR}/ffmpeg-package/libavcodec.lib
-    # COMMAND ${CMAKE_COMMAND} -E copy <BINARY_DIR>/libavformat/libavformat.lib             ${CMAKE_CURRENT_BINARY_DIR}/ffmpeg-package/libavformat.lib
-    # COMMAND ${CMAKE_COMMAND} -E copy <BINARY_DIR>/libswresample/libswresample.lib         ${CMAKE_CURRENT_BINARY_DIR}/ffmpeg-package/libswresample.lib
-    # COMMAND ${CMAKE_COMMAND} -E copy <BINARY_DIR>/libswscale/libswscale.lib               ${CMAKE_CURRENT_BINARY_DIR}/ffmpeg-package/libswscale.lib
+    # COMMAND ${CMAKE_COMMAND} -E copy <BINARY_DIR>/libavfilter/avfilter.dll             ${CMAKE_SOURCE_DIR}/avfilter.dll
+    # COMMAND ${CMAKE_COMMAND} -E copy <BINARY_DIR>/libavutil/avutil.dll                 ${CMAKE_SOURCE_DIR}/avutil.dll
+    # COMMAND ${CMAKE_COMMAND} -E copy <BINARY_DIR>/libavdevice/avdevice.dll             ${CMAKE_SOURCE_DIR}/avdevice.dll
+    # COMMAND ${CMAKE_COMMAND} -E copy <BINARY_DIR>/libavcodec/avcodec.dll               ${CMAKE_SOURCE_DIR}/avcodec.dll
+    # COMMAND ${CMAKE_COMMAND} -E copy <BINARY_DIR>/libavformat/avformat.dll             ${CMAKE_SOURCE_DIR}/avformat.dll
+    # COMMAND ${CMAKE_COMMAND} -E copy <BINARY_DIR>/libswresample/swresample.dll         ${CMAKE_SOURCE_DIR}/swresample.dll
+    # COMMAND ${CMAKE_COMMAND} -E copy <BINARY_DIR>/libswscale/swscale.dll               ${CMAKE_SOURCE_DIR}/swscale.dll
 
-    COMMAND ${CMAKE_COMMAND} -E copy <BINARY_DIR>/libavfilter/avfilter.dll             ${CMAKE_CURRENT_BINARY_DIR}/ffmpeg-package/avfilter.dll
-    COMMAND ${CMAKE_COMMAND} -E copy <BINARY_DIR>/libavutil/avutil.dll                 ${CMAKE_CURRENT_BINARY_DIR}/ffmpeg-package/avutil.dll
-    COMMAND ${CMAKE_COMMAND} -E copy <BINARY_DIR>/libavdevice/avdevice.dll             ${CMAKE_CURRENT_BINARY_DIR}/ffmpeg-package/avdevice.dll
-    COMMAND ${CMAKE_COMMAND} -E copy <BINARY_DIR>/libavcodec/avcodec.dll               ${CMAKE_CURRENT_BINARY_DIR}/ffmpeg-package/avcodec.dll
-    COMMAND ${CMAKE_COMMAND} -E copy <BINARY_DIR>/libavformat/avformat.dll             ${CMAKE_CURRENT_BINARY_DIR}/ffmpeg-package/avformat.dll
-    COMMAND ${CMAKE_COMMAND} -E copy <BINARY_DIR>/libswresample/swresample.dll         ${CMAKE_CURRENT_BINARY_DIR}/ffmpeg-package/swresample.dll
-    COMMAND ${CMAKE_COMMAND} -E copy <BINARY_DIR>/libswscale/swscale.dll               ${CMAKE_CURRENT_BINARY_DIR}/ffmpeg-package/swscale.dll
     COMMENT "Copying ffmpeg binaries and manual"
-)
-
-set(RENAME ${CMAKE_CURRENT_BINARY_DIR}/ffmpeg-prefix/src/rename.sh)
-file(WRITE ${RENAME}
-"#!/bin/bash
-cd $1
-GIT=$(git rev-parse --short=7 HEAD)
-rm -rf $2-git-\${GIT}
-mv -f $2 $2-git-\${GIT}")
-
-ExternalProject_Add_Step(ffmpeg copy-package-dir
-    DEPENDEES copy-binary
-    COMMAND chmod 755 ${RENAME}
-
-    COMMAND mv -f ${CMAKE_CURRENT_BINARY_DIR}/ffmpeg-package ${CMAKE_BINARY_DIR}/ffmpeg-package-${TARGET_CPU}${x86_64_LEVEL}-${BUILDDATE}
-    COMMAND ${RENAME} <SOURCE_DIR> ${CMAKE_BINARY_DIR}/ffmpeg-package-${TARGET_CPU}${x86_64_LEVEL}-${BUILDDATE}
-    COMMENT "Moving ffmpeg package folder"
-    LOG 1
 )
 
 force_rebuild_git(ffmpeg)
 force_meson_configure(ffmpeg)
-# cleanup(ffmpeg copy-package-dir)
+# cleanup(ffmpeg copy-binary)

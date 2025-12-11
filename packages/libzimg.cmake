@@ -15,6 +15,8 @@ ExternalProject_Add(libzimg
         --host=${TARGET_ARCH}
         --prefix=${MINGW_INSTALL_PREFIX}
         --disable-shared
+        --enable-static
+	    --with-pic 
     BUILD_COMMAND ${MAKE}
     INSTALL_COMMAND ${MAKE} install
             COMMAND bash -c "git -C ${src_graphengine} clean -dfx"
