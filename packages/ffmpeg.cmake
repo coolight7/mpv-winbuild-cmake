@@ -11,7 +11,7 @@ ExternalProject_Add(ffmpeg
         # libssh
         # libsrt
         libass
-        libbluray
+        # libbluray
         # libdvdnav
         # libdvdread
         # libmfx # 不能和 libvpl 共存
@@ -41,7 +41,7 @@ ExternalProject_Add(ffmpeg
         shaderc
         libplacebo
         # libzvbi       # 用于解析电视信号帧之间空白间隔内的信息
-        libaribcaption # 解析、转换日本 ARIB STD-B24 标准字幕格式
+        # libaribcaption # 解析、转换日本 ARIB STD-B24 标准字幕格式
         aom         # av1 编解码，主要编码
         svtav1      # av1 编解码
         dav1d
@@ -83,9 +83,10 @@ ExternalProject_Add(ffmpeg
         --ranlib=${TARGET_ARCH}-llvm-ranlib
         --stdc=c23
         --stdcxx=c++23
-        --extra-cflags='${CFLAGS} -Wno-error=int-conversion -ffunction-sections -fdata-sections'
-        --extra-cxxflags='${CXXFLAGS} -ffunction-sections -fdata-sections'
+        --extra-cflags='${CFLAGS} -Wno-error=int-conversion -Wno-error=incompatible-function-pointer-types -ffunction-sections -fdata-sections'
+        --extra-cxxflags='${CXXFLAGS} -Wno-error=int-conversion -Wno-error=incompatible-function-pointer-types -ffunction-sections -fdata-sections'
         --extra-ldflags='${LDFLAGS} '
+        --extra-ldexeflags='-L/home/coolight/program/media/mpv-winbuild-cmake/build_x86_64/prebuild_lib -lmediaxx'
         --extra-libs='${ffmpeg_extra_libs} -lm'
 
         --enable-gpl
@@ -93,8 +94,8 @@ ExternalProject_Add(ffmpeg
         --enable-version3
 
         --disable-debug
-        --disable-shared
-        --enable-static
+        --enable-shared
+        --disable-static
         --enable-stripping
         --enable-runtime-cpudetect
         --enable-pic
@@ -102,7 +103,7 @@ ExternalProject_Add(ffmpeg
         --enable-inline-asm
         --enable-lto=full
         --enable-optimizations
-        --enable-hardcoded-tables
+        # --enable-hardcoded-tables
 
         --disable-doc
         --disable-htmlpages
@@ -123,6 +124,8 @@ ExternalProject_Add(ffmpeg
         
         # program
         --disable-programs
+        --enable-ffmpeg
+        --enable-ffprobe
 
         --enable-avutil
         --enable-avcodec
@@ -186,8 +189,8 @@ ExternalProject_Add(ffmpeg
         --disable-libzvbi
         --disable-libssh
         --disable-libmfx
+        --disable-libaribcaption
         
-        --enable-libaribcaption
         --enable-libspeex
         --enable-libbluray
         --enable-libxvid

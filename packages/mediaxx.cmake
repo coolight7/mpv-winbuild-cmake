@@ -14,6 +14,7 @@ ExternalProject_Add(mediaxx
         -DCMAKE_INTERPROCEDURAL_OPTIMIZATION=ON
         -DSTATIC_LINK_FFMPEG=ON
         -DSTATIC_LINK_LIBMPV=ON
+        -DEXPORT_FULL_SYMBOL=ON
         -DEXPORT_ALL_SYMBOL=OFF
         -DCMAKE_C_FLAGS=' -fvisibility=hidden -ffunction-sections -fdata-sections -flto'
         -DCMAKE_CXX_FLAGS=' -fvisibility=hidden -ffunction-sections -fdata-sections -flto'
