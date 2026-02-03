@@ -1,14 +1,17 @@
 ## ffmpeg+libmpv+mediaxx build
 - 搭建环境
     - 按 [CRUDE_README.md] 创建 docker 容器，并放好项目代码、搭建完编译环境
-- 构建编译，在容器内操作：
-    - 执行 `./build-mpv.sh` 得到构建目录
+- 配置/下载依赖，在docker容器内操作：
+    - 执行 `./configure.sh` 得到构建目录
     - 上一步成功后，第一次编译的话复制一份 `src_packages_mpv` 到 `src_packages_mpv_temp`，`cp -r src_packages_mpv src_packages_mpv_temp`
+- 开始编译，在docker容器内操作：
     - 执行 `./mediaxx-rebuild.sh` 即可开始编译
-    - 不能重复执行 `build-mpv.sh`，除非执行 `./clean.sh` 清理后
+    - 不能重复执行 `configure.sh`，除非执行 `./clean.sh` 清理后
     - 后续重新编译，执行 `./mediaxx-rebuild.sh`，会利用已有的编译缓存，缩短耗时
     - 如果在真机修改了文件内容想重新编译，可以在真机执行 `./copydocker.sh` 复制当前文件夹内容覆盖进容器，但注意不会删除文件，比如真机删除了一个文件，复制并不会删除容器内的这个文件
     - 如果修改内容对 ffmpeg、mpv、mediaxx 有关联需要重新编译，可以在容器内执行 `./ffmpeg-clean.sh`、`./mpv-clean.sh`、`mediaxx-clean.sh` 即可删除对应的编译输出目录，在执行 `mediaxx-rebuild.sh` 时就会重新编译，无关联可以保留，节省编译时间
+    - 如果修改了依赖包版本想重新编译，可以类似 `ffmpeg-clean.sh` 一样，删除已编译好的 `build_x86_64/x86_64-w64-mingw32/` 中的 .a/.so 库文件，删除 `build_x86_64_mpv/packages/xxx-prefix` 文件夹
+- 如果编译出错，在容器内可以按错误提示去找 cmake 的日志文件记录，vim 查看
 - 编译完成后，产物输出到 `{容器内根目录}/output/`
 - 在真机，也就是容器外执行 `./copyoutput.sh` 即可复制输出文件出来
 

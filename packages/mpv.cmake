@@ -2,10 +2,9 @@ ExternalProject_Add(mpv
     DEPENDS
         ffmpeg
     GIT_REPOSITORY https://github.com/mpv-player/mpv.git
-    GIT_TAG v0.40.0
+    GIT_TAG v0.41.0
     SOURCE_DIR ${SOURCE_LOCATION}
     UPDATE_COMMAND ""
-    PATCH_COMMAND ${EXEC} git apply ${CMAKE_CURRENT_SOURCE_DIR}/mpv-*.patch
     CONFIGURE_COMMAND ${EXEC} CONF=1 meson setup <BINARY_DIR> <SOURCE_DIR>
         --prefix=${MINGW_INSTALL_PREFIX}
         --libdir=${MINGW_INSTALL_PREFIX}/lib
@@ -50,7 +49,7 @@ ExternalProject_Add(mpv
         -Dalsa=disabled
         -Dpulse=disabled
         -Dsdl2-audio=disabled
-        -Dsdl2=disabled
+        -Dsdl2-video=disabled
         -Dopenal=disabled
 
         -Dwasapi=enabled
