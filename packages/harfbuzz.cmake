@@ -5,9 +5,8 @@ ExternalProject_Add(harfbuzz
     GIT_REPOSITORY https://github.com/harfbuzz/harfbuzz.git
     SOURCE_DIR ${SOURCE_LOCATION}
     GIT_REMOTE_NAME origin
-    GIT_TAG main
+    GIT_TAG 12.3.2
     GIT_CLONE_FLAGS "--sparse --filter=tree:0"
-    GIT_CLONE_POST_COMMAND "sparse-checkout set --no-cone /* !test"
     UPDATE_COMMAND ""
     CONFIGURE_COMMAND ${EXEC} CONF=1 meson setup <BINARY_DIR> <SOURCE_DIR>
         --prefix=${MINGW_INSTALL_PREFIX}
@@ -28,4 +27,3 @@ ExternalProject_Add(harfbuzz
 
 force_rebuild_git(harfbuzz)
 force_meson_configure(harfbuzz)
-cleanup(harfbuzz install)

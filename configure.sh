@@ -33,10 +33,10 @@ if [ $? -ne 0 ]; then
     exit 77
 fi
 
-cd build_x86_64_mpv/
+# 如果还没有 [src_packages_mpv] 执行下面的下载
+# ninja download
 
-# 编译中途失败了修好直接再运行这一句就可以了
-ninja mediaxx
+# 编译可以按需要执行: ffmepg-rebuild.sh、mpv-rebuild.sh、mediaxx-rebuild.sh
 
 # 如果编译失败了，可以直接进入 build_x86_64_mpv/packages/对应包/src/xxx-build/ 内手动按 xxx.cmake 编译 make && make install
 # 如果修改了某个模块的cmake，想要重新编译，可以按下面步骤：
