@@ -108,7 +108,7 @@ Example:
     -DGCC_ARCH=x86-64 \
     -DSINGLE_SOURCE_LOCATION="$PWD/packages" \
     -DMINGW_INSTALL_PREFIX="$PWD/build_x86_64/x86_64-w64-mingw32" \
-    -G Ninja -B build_x86_64_mpv -S .
+    -G Ninja -B build_x86_64_full -S .
 
 The cmake command will create `clang_root` as clang sysroot where llvm tools installed. `build_x86_64` is build directory to compiling packages.
 

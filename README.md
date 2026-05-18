@@ -10,7 +10,7 @@
         - 后续重新编译，执行 `./mediaxx-rebuild.sh`，会利用已有的编译缓存，缩短耗时
     - 如果在真机修改了文件内容想重新编译，可以在真机执行 `./copydocker.sh` 复制当前文件夹内容覆盖进容器，但注意不会删除文件，比如真机删除了一个文件，复制并不会删除容器内的这个文件
     - 如果修改内容对 ffmpeg、mpv、mediaxx 有关联需要重新编译，可以在容器内执行 `./ffmpeg-clean.sh`、`./mpv-clean.sh`、`mediaxx-clean.sh` 即可删除对应的编译输出目录，在执行 `mediaxx-rebuild.sh` 时就会重新编译，无关联可以保留，节省编译时间
-    - 如果修改了依赖包版本想重新编译，可以类似 `ffmpeg-clean.sh` 一样，删除已编译好的 `build_x86_64/x86_64-w64-mingw32/` 中的 .a/.so 库文件，删除 `build_x86_64_mpv/packages/xxx-prefix` 文件夹
+    - 如果修改了依赖包版本想重新编译，可以类似 `ffmpeg-clean.sh` 一样，删除已编译好的 `build_x86_64/x86_64-w64-mingw32/` 中的 .a/.so 库文件，删除 `build_x86_64_full/packages/xxx-prefix` 文件夹
 - 如果编译出错，在容器内可以按错误提示去找 cmake 的日志文件记录，vim 查看
 - 编译完成后，产物输出到 `{容器内根目录}/output/`
 - 在真机，也就是容器外执行 `./copyoutput.sh` 即可复制输出文件出来
@@ -22,13 +22,31 @@
     - 更新 ffmpeg、mpv 等依赖库
     - 添加编译 mediaxx，合并 ffmpeg、libmpv、mediaxx 输出为一个动态库 `libmediaxx.dll`，并控制动态库导出符号等方式压缩体积
         - 相比于以往 拆分为 libav、mpv.dll、mediaxx.dll，由于多个 dll 共用依赖库，且减少了导出符号，让链接器能判断出更多无用的代码段可以删减，可以大幅压缩体积（110MB -> 50 MB）
-    - 在 full 分支中，支持将 ffmpeg.exe 和 ffprobe.exe 中原本依赖的 libav 动态库转向 libmediaxx.dll，如果项目需要 ffm 的可执行文件，这可以进一步提高复用
-        - 基本思路是先按普通编译出依赖 libav 的 ffmpeg.exe 和 ffprobe.exe
+    - 在 `full 分支`中，支持将 ffmpeg.exe 和 ffprobe.exe 中原本依赖的 libav 动态库转向 libmediaxx.dll，如果项目需要 ffm 的可执行文件，这可以进一步提高复用
+        - 基本思路是先按普通编译出依赖 libav/libsw 的 ffmpeg.exe 和 ffprobe.exe
         - 然后用 win 的命令行查看这两个 exe 依赖 libav 的符号列表，复制这些符号到`{mediaxx 项目}/src/ffmpeg-help/libmpv-win-full.def`和`{mediaxx 项目}/src/ffmpeg-help/libmpv-win-full-symbols.txt`中
         - 然后编译出带 ffmpeg.exe 需要的符号表的 libmediaxx.dll
-        - 接着回过头修改编译 ffmpeg.exe 的脚本，详见 full 分支的 git 修改记录，通过链接参数指定 libmediaxx 高优先级，链接器在 libmediaxx 内可以找到 ffmpeg.exe 所需的所有来自 libav 的符号，那么后续就只需要依赖 libmediaxx 一个，不会链接 libav 了
+        - 接着回过头修改编译 ffmpeg.exe 的脚本，详见 full 分支的 git 修改记录，通过链接参数指定 libmediaxx 高优先级，链接器在 libmediaxx 内可以找到 ffmpeg.exe 所需的所有来自 libav 的符号，那么后续就只需要依赖 libmediaxx 一个，不会链接 libav/libsw 了
     - 修改了一些编译参数，如 ffmpeg 倾向性能优化编译，舍弃了一些体积缩减
     - patch 修复 ffmpeg、libmpv 的一些问题、调整功能
+
+## Full 分支更新编译
+- 如果修改了 ffmpeg 版本，需要同步更新 `libmediaxx.dll`/`ffmpeg.exe`/`ffprobe.exe`的话，进入docker容器内：
+    1. 将旧的 `libmediaxx.dll` 放到 `build_x86_64/prebuild_lib/`，如果没有 `libmediaxx.dll` 就先随便编译一个
+    2. 修改 `packages/ffmpeg.cmake`，`--enable-shared --disable-static`，配置为编译出动态库 `libav/libsw` 和 `ffmpeg/ffprobe`
+    3. 执行 `ffmpeg-rebuild.sh` 编译出 `ffmepg.exe和ffprobe.exe`，然后根据 .exe 的符号表查看 新版本`ffmpeg/ffprobe`需要的符号是 `libmediaxx.dll`没有的，复制添加到项目 `mediaxx`/src/ffmpeg-help/libmpv-win-full* 内:
+```sh
+cd {项目根目录}/output
+# 提取符号表
+./create_comm_syms.sh
+# 查看对比，我们需要的是 ffmpeg/ffprobe 都只依赖 libmediaxx.dll，不再需要原本的 `libav*/libsw*`，因此符号表中如果存在依赖于 `libav*/libsw*` 的符号，就是应当复制添加到 `mediaxx` 的
+vi ffmpeg_undef.txt
+vi ffprobe_undef.txt
+```
+- 
+    4. 修改 `packages/ffmpeg.cmake`，切换为编译出静态库`--disable-shared --enable-static`，重新编译`mediaxx-rebuild.sh` 包含`ffmpeg/ffprobe`所需所有来自`libav/libsw`符号的`libmediaxx.dll`
+    5. 复制新的 `libmediaxx.dll` 到 `build_x86_64/prebuild_lib/`
+    6. 修改 `packages/ffmpeg.cmake`，切换为编译出动态库，执行 `ffmpeg-rebuild.sh`，此时新生成的 `ffmpeg/ffprobe` 将不再依赖于 `libav/libsw`，而是依赖`libmediaxx.dll`
 
 # 其他
 - `/outdate-patch` 内是过期的patch，在新的依赖库版本已经不再需要

@@ -1,5 +1,5 @@
 ExternalProject_Add(game-music-emu
-    GIT_REPOSITORY https://bitbucket.org/mpyne/game-music-emu.git
+    GIT_REPOSITORY https://github.com/libgme/game-music-emu.git
     SOURCE_DIR ${SOURCE_LOCATION}
     GIT_CLONE_FLAGS "--filter=tree:0"
     UPDATE_COMMAND ""

@@ -254,13 +254,16 @@ ExternalProject_Add(ffmpeg
 
 ExternalProject_Add_Step(ffmpeg copy-binary
     DEPENDEES install
-    COMMAND ${CMAKE_COMMAND} -E copy ${MINGW_INSTALL_PREFIX}/lib/libavfilter.dll.a           ${CMAKE_SOURCE_DIR}/output/libavfilter.dll.a
-    COMMAND ${CMAKE_COMMAND} -E copy ${MINGW_INSTALL_PREFIX}/lib/libavutil.dll.a             ${CMAKE_SOURCE_DIR}/output/libavutil.dll.a
-    COMMAND ${CMAKE_COMMAND} -E copy ${MINGW_INSTALL_PREFIX}/lib/libavdevice.dll.a           ${CMAKE_SOURCE_DIR}/output/libavdevice.dll.a
-    COMMAND ${CMAKE_COMMAND} -E copy ${MINGW_INSTALL_PREFIX}/lib/libavcodec.dll.a            ${CMAKE_SOURCE_DIR}/output/libavcodec.dll.a
-    COMMAND ${CMAKE_COMMAND} -E copy ${MINGW_INSTALL_PREFIX}/lib/libavformat.dll.a           ${CMAKE_SOURCE_DIR}/output/libavformat.dll.a
-    COMMAND ${CMAKE_COMMAND} -E copy ${MINGW_INSTALL_PREFIX}/lib/libswresample.dll.a         ${CMAKE_SOURCE_DIR}/output/libswresample.dll.a
-    COMMAND ${CMAKE_COMMAND} -E copy ${MINGW_INSTALL_PREFIX}/lib/libswscale.dll.a            ${CMAKE_SOURCE_DIR}/output/libswscale.dll.a
+    # COMMAND ${CMAKE_COMMAND} -E copy <BINARY_DIR>/libavfilter/libavfilter.dll.a          ${CMAKE_SOURCE_DIR}/output/libavfilter.dll.a
+    # COMMAND ${CMAKE_COMMAND} -E copy <BINARY_DIR>/libavutil/libavutil.dll.a              ${CMAKE_SOURCE_DIR}/output/libavutil.dll.a
+    # COMMAND ${CMAKE_COMMAND} -E copy <BINARY_DIR>/libavdevice/libavdevice.dll.a          ${CMAKE_SOURCE_DIR}/output/libavdevice.dll.a
+    # COMMAND ${CMAKE_COMMAND} -E copy <BINARY_DIR>/libavcodec/libavcodec.dll.a            ${CMAKE_SOURCE_DIR}/output/libavcodec.dll.a
+    # COMMAND ${CMAKE_COMMAND} -E copy <BINARY_DIR>/libavformat/libavformat.dll.a          ${CMAKE_SOURCE_DIR}/output/libavformat.dll.a
+    # COMMAND ${CMAKE_COMMAND} -E copy <BINARY_DIR>/libswresample/libswresample.dll.a      ${CMAKE_SOURCE_DIR}/output/libswresample.dll.a
+    # COMMAND ${CMAKE_COMMAND} -E copy <BINARY_DIR>/libswscale/libswscale.dll.a            ${CMAKE_SOURCE_DIR}/output/libswscale.dll.a
+
+    COMMAND ${CMAKE_COMMAND} -E copy <BINARY_DIR>/ffmpeg.exe                             ${CMAKE_SOURCE_DIR}/output/ffmpeg.exe
+    COMMAND ${CMAKE_COMMAND} -E copy <BINARY_DIR>/ffprobe.exe                            ${CMAKE_SOURCE_DIR}/output/ffprobe.exe
 
     # COMMAND ${CMAKE_COMMAND} -E copy <BINARY_DIR>/libavfilter/avfilter.dll             ${CMAKE_SOURCE_DIR}/avfilter.dll
     # COMMAND ${CMAKE_COMMAND} -E copy <BINARY_DIR>/libavutil/avutil.dll                 ${CMAKE_SOURCE_DIR}/avutil.dll
