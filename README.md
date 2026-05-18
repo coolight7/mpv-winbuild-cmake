@@ -3,7 +3,7 @@
     - 按 [CRUDE_README.md] 创建 docker 容器，并放好项目代码、搭建完编译环境
 - 配置/下载依赖，在docker容器内操作：
     - 执行 `./configure.sh` 得到构建目录
-    - 上一步成功后，第一次编译的话复制一份 `src_packages_musicxx` 到 `src_packages_musicxx_temp`，`cp -r src_packages_musicxx src_packages_musicxx_temp`
+    - 上一步成功后，第一次编译的话复制一份 `src_packages_musicxx` 到 `src_packages_crude_temp`，`cp -r src_packages_musicxx src_packages_crude_temp`
 - 开始编译，在docker容器内操作：
     - 执行 `./mediaxx-rebuild.sh` 即可开始编译
         - 不能重复执行 `configure.sh`，除非执行 `./clean.sh` 清理后

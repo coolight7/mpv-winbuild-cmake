@@ -36,4 +36,4 @@ rm build_x86_64/x86_64-w64-mingw32/lib/swresample*
 
 rm -rf build_x86_64_musicxx/packages/ffmpeg-prefix
 rm -rf src_packages_musicxx/ffmpeg
-cp -r src_packages_musicxx_temp/ffmpeg src_packages_musicxx/
+cp -r src_packages_crude_temp/ffmpeg src_packages_musicxx/
