@@ -4,7 +4,7 @@
 # 留意 自动 git clone ffmpeg 版本是否正确
 
 export BIT=x86_64
-export mpv_ver=0.40.0
+export mpv_ver=0.41.0
 
 export http_proxy=http://172.29.48.1:7897
 export https_proxy=http://172.29.48.1:7897
@@ -24,18 +24,18 @@ cmake -DTARGET_ARCH=x86_64-w64-mingw32 \
     -DCMAKE_INSTALL_PREFIX="$PWD/clang_root" \
     -DCOMPILER_TOOLCHAIN=clang \
     -DGCC_ARCH=x86-64 \
-    -DSINGLE_SOURCE_LOCATION="$PWD/src_packages_mpv" \
+    -DSINGLE_SOURCE_LOCATION="$PWD/src_packages_musicxx" \
     -DMINGW_INSTALL_PREFIX="$PWD/build_x86_64/x86_64-w64-mingw32" \
-    -G Ninja -B build_x86_64_mpv -S .
+    -G Ninja -B build_x86_64_musicxx -S .
 
 if [ $? -ne 0 ]; then
     echo "命令执行失败"
     exit 77
 fi
 
-# 如果还没有 [src_packages_mpv] 执行下面的下载
+# 如果还没有 [src_packages_musicxx] 执行下面的下载
 # ninja download
 
 # 编译可以按需要执行: ffmepg-rebuild.sh、mpv-rebuild.sh、mediaxx-rebuild.sh
 
-# 如果编译失败了，可以直接进入 build_x86_64_mpv/packages/对应包/src/xxx-build/ 内手动按 xxx.cmake 编译 make && make install
+# 如果编译失败了，可以直接进入 build_x86_64_musicxx/packages/对应包/src/xxx-build/ 内手动按 xxx.cmake 编译 make && make install

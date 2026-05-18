@@ -39,7 +39,7 @@ ExternalProject_Add(libplacebo
 ExternalProject_Add_Step(libplacebo remove-dep-dllexport
     DEPENDEES update
 
-    COMMAND sed -i "/^#  define PL_API/ s|__declspec(dllexport)| |"         ${CMAKE_SOURCE_DIR}/src_packages_mpv/libplacebo/src/include/libplacebo/config.h.in
+    COMMAND sed -i "/^#  define PL_API/ s|__declspec(dllexport)| |"         ${CMAKE_SOURCE_DIR}/src_packages_musicxx/libplacebo/src/include/libplacebo/config.h.in
 
     COMMENT ""
 )
