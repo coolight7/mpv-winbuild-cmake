@@ -29,7 +29,7 @@ ExternalProject_Add(opus
 ExternalProject_Add_Step(opus remove-dep-dllexport
     DEPENDEES update
 
-    COMMAND sed -i "/^#   define OPUS_EXPORT/ s|__declspec(dllexport)| |"   ${CMAKE_SOURCE_DIR}/src_packages_mpv/opus/include/opus_defines.h
+    COMMAND sed -i "/^#   define OPUS_EXPORT/ s|__declspec(dllexport)| |"   ${CMAKE_SOURCE_DIR}/src_packages_full/opus/include/opus_defines.h
 
     COMMENT ""
 )

@@ -34,6 +34,6 @@ rm build_x86_64/x86_64-w64-mingw32/lib/avutil*
 rm build_x86_64/x86_64-w64-mingw32/lib/swscale*
 rm build_x86_64/x86_64-w64-mingw32/lib/swresample*
 
-rm -rf build_x86_64_mpv/packages/ffmpeg-prefix
-rm -rf src_packages_mpv/ffmpeg
-cp -r src_packages_mpv_temp/ffmpeg src_packages_mpv/
+rm -rf build_x86_64_full/packages/ffmpeg-prefix
+rm -rf src_packages_full/ffmpeg
+cp -r src_packages_crude_temp/ffmpeg src_packages_full/
