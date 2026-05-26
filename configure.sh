@@ -35,8 +35,8 @@ fi
 
 # 如果还没有 [src_packages_full] 执行下面的下载
 # ninja download
-# 下载后复制一份 [src_packages_musicxx] 到 [src_packages_crude_temp]
-# cp -r src_packages_musicxx src_packages_crude_temp
+# 下载后复制一份 [src_packages_full] 到 [src_packages_crude_temp]
+# cp -r src_packages_full src_packages_crude_temp
 
 # 编译可以按需要执行: ffmepg-rebuild.sh、mpv-rebuild.sh、mediaxx-rebuild.sh
 

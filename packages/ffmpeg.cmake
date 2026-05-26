@@ -94,8 +94,8 @@ ExternalProject_Add(ffmpeg
         --enable-version3
 
         --disable-debug
-        --enable-shared
-        --disable-static
+        --disable-shared
+        --enable-static
         --enable-stripping
         --enable-runtime-cpudetect
         --enable-pic
