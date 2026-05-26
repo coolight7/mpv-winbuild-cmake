@@ -46,7 +46,7 @@ ExternalProject_Add(ffmpeg
         dav1d
         # vapoursynth  # python 扩展视频处理
         ${ffmpeg_uavs3d}
-        ${ffmpeg_davs2}
+        # ${ffmpeg_davs2}
         rubberband
         libva
         openal-soft
@@ -87,7 +87,7 @@ ExternalProject_Add(ffmpeg
         --extra-ldflags='${LDFLAGS} '
         --extra-libs='${ffmpeg_extra_libs} -lm'
 
-        --enable-gpl
+        --disable-gpl
         --enable-nonfree
         --enable-version3
 
@@ -138,7 +138,7 @@ ExternalProject_Add(ffmpeg
         --disable-parser=cook,dvdsub,dvbsub,dvd_nav,g723_1,xma,sipr,bmp,adx
         
         --disable-decoders
-        --enable-decoder=aac*,ac3*,acelp_*,alac,als,amrnb,amrwb,amv,ansi,anull,ape,apng,atrac*,av1,av1_*,avrn,avrp,avs,avui,bitpacked,bmv_audio,cavs,cbd2_dpcm,cfhd,clearvideo,cljr,cyuv,dca,dds,derf_dpcm,dfpwm,dirac,dnxhd,dolby_e,dpx,dsd_*,dsicinaudio,dsicinvideo,dss_sp,dst,dvaudio,dvvideo,dxtory,dxv,eac3,eacmv,eamad,eatgq,eatgv,eatqi,eightbps,eightsvx_exp,eightsvx_fib,escape124,escape130,evrc,exr,fastaudio,ffv1,ffvhuff,ffwavesynth,fic,fits,flac,flashsv,flashsv2,flv,fmvc,fraps,frwu,ftr,g2m,g729,gdv,gif,gremlin_dpcm,h261,h263*,h264*,hap,hdr,hevc*,hnm4_video,hq_hqa,hqx,huffyuv,hymt,iac,idf,iff_ilbm,ilbc,imc,imm4,imm5,interplay_acm,interplay_dpcm,interplay_video,jpeg2000,jpegls,jv,kgv1,kmvc,lagarith,lead,libdav1d,libdavs2,libjxl*,libopus,libuavs3d,libvorbis,libvpx*,loco,lscr,m101,mace3,mace6,magicyuv,media100,metasound,misc4,mjpeg*,mlp,mmvideo,mobiclip,motionpixels,mp1*,mp2*,mp3*,mpc*,mpeg*,mpl2,msa1,mscc,msmpeg*,msnsiren,msp2,msrle,mss*,msvideo1,mszh,mts2,mv30,mvc1,mvc2,mvdv,mvha,mwsc,mxpeg,notchlc,nuv,on2avc,opus,osq,paf_audio,paf_video,pam,pbm,pcm_*,pcx,pdv,pfm,pgm,pgmyuv,pgx,phm,photocd,pictor,pixlet,pjs,png,ppm,prores,prores_raw,prosumer,ptx,qcelp,qdraw,qoa,qoi,qpeg,qtrle,r10k,r210,ra_144,ra_288,ralf,rasc,rawvideo,rka,rl2,roq,rpza,rscc,rtv1,rv*,s302m,sanm,sbc,scpr,screenpresso,sdx2_dpcm,sga,sgi,sgirle,sheervideo,simbiosis_imx,siren,smackaud,smc,smvjpeg,snow,sonic,sp5x,speedhq,speex,srgc,sunrast,svq1,svq3,tak,targa,targa_y216,tdsc,text,theora,tiff,truehd,truemotion1,truemotion2,truemotion2rt,tscc,tscc2,tta,twinvq,ulti,utvideo,vb,vble,vbn,vc1*,vmdaudio,vmdvideo,vmix,vnull,vorbis,vp*,vqc,vvc*,wady_dpcm,wavarc,wavpack,wbmp,wcmv,webp,wmalossless,wmapro,wmav*,wmv*,wnv1,wrapped_avframe,xbin,xbm,xface,xl,xpm,xwd,y41p,ylc,yop,yuv4,zero12v,zerocodec
+        --enable-decoder=aac*,ac3*,acelp_*,alac,als,amrnb,amrwb,amv,ansi,anull,ape,apng,atrac*,av1,av1_*,avrn,avrp,avs,avui,bitpacked,bmv_audio,cavs,cbd2_dpcm,cfhd,clearvideo,cljr,cyuv,dca,dds,derf_dpcm,dfpwm,dirac,dnxhd,dolby_e,dpx,dsd_*,dsicinaudio,dsicinvideo,dss_sp,dst,dvaudio,dvvideo,dxtory,dxv,eac3,eacmv,eamad,eatgq,eatgv,eatqi,eightbps,eightsvx_exp,eightsvx_fib,escape124,escape130,evrc,exr,fastaudio,ffv1,ffvhuff,ffwavesynth,fic,fits,flac,flashsv,flashsv2,flv,fmvc,fraps,frwu,ftr,g2m,g729,gdv,gif,gremlin_dpcm,h261,h263*,h264*,hap,hdr,hevc*,hnm4_video,hq_hqa,hqx,huffyuv,hymt,iac,idf,iff_ilbm,ilbc,imc,imm4,imm5,interplay_acm,interplay_dpcm,interplay_video,jpeg2000,jpegls,jv,kgv1,kmvc,lagarith,lead,libdav1d,libjxl*,libopus,libuavs3d,libvorbis,libvpx*,loco,lscr,m101,mace3,mace6,magicyuv,media100,metasound,misc4,mjpeg*,mlp,mmvideo,mobiclip,motionpixels,mp1*,mp2*,mp3*,mpc*,mpeg*,mpl2,msa1,mscc,msmpeg*,msnsiren,msp2,msrle,mss*,msvideo1,mszh,mts2,mv30,mvc1,mvc2,mvdv,mvha,mwsc,mxpeg,notchlc,nuv,on2avc,opus,osq,paf_audio,paf_video,pam,pbm,pcm_*,pcx,pdv,pfm,pgm,pgmyuv,pgx,phm,photocd,pictor,pixlet,pjs,png,ppm,prores,prores_raw,prosumer,ptx,qcelp,qdraw,qoa,qoi,qpeg,qtrle,r10k,r210,ra_144,ra_288,ralf,rasc,rawvideo,rka,rl2,roq,rpza,rscc,rtv1,rv*,s302m,sanm,sbc,scpr,screenpresso,sdx2_dpcm,sga,sgi,sgirle,sheervideo,simbiosis_imx,siren,smackaud,smc,smvjpeg,snow,sonic,sp5x,speedhq,speex,srgc,sunrast,svq1,svq3,tak,targa,targa_y216,tdsc,text,theora,tiff,truehd,truemotion1,truemotion2,truemotion2rt,tscc,tscc2,tta,twinvq,ulti,utvideo,vb,vble,vbn,vc1*,vmdaudio,vmdvideo,vmix,vnull,vorbis,vp*,vqc,vvc*,wady_dpcm,wavarc,wavpack,wbmp,wcmv,webp,wmalossless,wmapro,wmav*,wmv*,wnv1,wrapped_avframe,xbin,xbm,xface,xl,xpm,xwd,y41p,ylc,yop,yuv4,zero12v,zerocodec
 
         --disable-encoders
         --enable-encoder=mjpeg,mjpeg_*,anull,vnull
@@ -261,7 +261,7 @@ ExternalProject_Add(ffmpeg
         --enable-zlib
         --enable-bzlib
         --enable-lzma
-        ${ffmpeg_davs2_cmd}
+        # ${ffmpeg_davs2_cmd}
         ${ffmpeg_uavs3d_cmd}
     BUILD_COMMAND ${MAKE}
     INSTALL_COMMAND ${MAKE} install
