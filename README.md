@@ -9,6 +9,7 @@
         - 不能重复执行 `configure.sh`，除非执行 `./clean.sh` 清理后
         - 后续重新编译，执行 `./mediaxx-rebuild.sh`，会利用已有的编译缓存，缩短耗时
     - 如果在真机修改了文件内容想重新编译，可以在真机执行 `./copydocker.sh` 复制当前文件夹内容覆盖进容器，但注意不会删除文件，比如真机删除了一个文件，复制并不会删除容器内的这个文件
+    - 修改依赖库代码时，可以修改 [src_packages_crude_temp] 内对应库的目录代码，然后修改 `packages/xxx.cmake` 关闭 git 链接和tag指定，注释末尾的 `force_rebuild_git(xxx)`
     - 如果修改内容对 ffmpeg、mpv、mediaxx 有关联需要重新编译，可以在容器内执行 `./ffmpeg-clean.sh`、`./mpv-clean.sh`、`mediaxx-clean.sh` 即可删除对应的编译输出目录，在执行 `mediaxx-rebuild.sh` 时就会重新编译，无关联可以保留，节省编译时间
     - 如果修改了依赖包版本想重新编译，可以类似 `ffmpeg-clean.sh` 一样，删除已编译好的 `build_x86_64/x86_64-w64-mingw32/` 中的 .a/.so 库文件，删除 `build_x86_64_full/packages/xxx-prefix` 文件夹
 - 如果编译出错，在容器内可以按错误提示去找 cmake 的日志文件记录，vim 查看

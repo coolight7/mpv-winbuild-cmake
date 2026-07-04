@@ -1,8 +1,8 @@
 ExternalProject_Add(mpv
     DEPENDS
         ffmpeg
-    GIT_REPOSITORY https://github.com/mpv-player/mpv.git
-    GIT_TAG v0.41.0
+    # GIT_REPOSITORY https://github.com/mpv-player/mpv.git
+    # GIT_TAG v0.41.0
     SOURCE_DIR ${SOURCE_LOCATION}
     UPDATE_COMMAND ""
     CONFIGURE_COMMAND ${EXEC} CONF=1 meson setup <BINARY_DIR> <SOURCE_DIR>
@@ -113,6 +113,6 @@ ExternalProject_Add_Step(mpv copy-binary
 # #     LOG 1
 # # )
 
-force_rebuild_git(mpv)
+# force_rebuild_git(mpv)
 force_meson_configure(mpv)
 # cleanup(mpv copy-binary)
