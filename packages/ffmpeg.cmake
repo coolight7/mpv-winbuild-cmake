@@ -3,7 +3,7 @@ ExternalProject_Add(ffmpeg
         angle-headers
         amf-headers
         avisynth-headers
-        ${nvcodec_headers}
+        nvcodec-headers
         bzip2
         # lame # mp3 encoder
         lcms2
@@ -37,7 +37,6 @@ ExternalProject_Add(ffmpeg
         libvpl
         # libopenmpt # 模块音乐格式解码
         libjxl
-        shaderc
         libplacebo
         # libzvbi       # 用于解析电视信号帧之间空白间隔内的信息
         # libaribcaption # 解析、转换日本 ARIB STD-B24 标准字幕格式
@@ -61,7 +60,7 @@ ExternalProject_Add(ffmpeg
         # vapoursynth
         # libsdl2
     GIT_REPOSITORY https://github.com/FFmpeg/FFmpeg.git
-    GIT_TAG n8.0.2
+    GIT_TAG n9.0.1
     SOURCE_DIR ${SOURCE_LOCATION}
     GIT_CLONE_FLAGS "--sparse"
     GIT_CLONE_POST_COMMAND "sparse-checkout set --no-cone /* !tests/ref/fate"
@@ -231,7 +230,6 @@ ExternalProject_Add(ffmpeg
         --enable-nvenc
 	    --disable-vulkan
         --disable-vulkan-static
-        --disable-libshaderc
         --disable-libplacebo
         --disable-dxva2
         --disable-openal
