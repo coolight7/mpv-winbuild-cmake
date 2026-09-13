@@ -3,7 +3,7 @@
     - 按 [CRUDE_README.md] 创建 docker 容器，并放好项目代码、搭建完编译环境
 - 配置/下载依赖，在docker容器内操作：
     - 执行 `./configure.sh` 得到构建目录
-    - 上一步成功后，第一次编译的话复制一份 `src_packages_full` 到 `src_packages_crude_temp`，`cp -r src_packages_full src_packages_crude_temp` 创建备份，后续重新编译时不用网络下载依赖库的源码
+    - 上一步成功后，第一次编译的话复制一份 `src_packages_musicxx` 到 `src_packages_crude_temp`，`cp -r src_packages_musicxx src_packages_crude_temp` 创建备份，后续重新编译时不用网络下载依赖库的源码
 - 开始编译，在docker容器内操作：
     - 执行 `./mediaxx-rebuild.sh` 即可开始编译
         - 不能重复执行 `configure.sh`，除非执行 `./clean.sh` 清理后
@@ -11,7 +11,7 @@
     - 如果在真机修改了文件内容想重新编译，可以在真机执行 `./copydocker.sh` 复制当前文件夹内容覆盖进容器，但注意不会删除文件，比如真机删除了一个文件，复制并不会删除容器内的这个文件
     - 修改依赖库代码时，可以修改 [src_packages_crude_temp] 内对应库的目录代码，然后修改 `packages/xxx.cmake` 关闭 git 链接和tag指定，注释末尾的 `force_rebuild_git(xxx)`
     - 如果修改内容对 ffmpeg、mpv、mediaxx 有关联需要重新编译，可以在容器内执行 `./ffmpeg-clean.sh`、`./mpv-clean.sh`、`mediaxx-clean.sh` 即可删除对应的编译输出目录，在执行 `mediaxx-rebuild.sh` 时就会重新编译，无关联可以保留，节省编译时间
-    - 如果修改了依赖包版本想重新编译，可以类似 `ffmpeg-clean.sh` 一样，删除已编译好的 `build_x86_64/x86_64-w64-mingw32/` 中的 .a/.so 库文件，删除 `build_x86_64_full/packages/xxx-prefix` 文件夹
+    - 如果修改了依赖包版本想重新编译，可以类似 `ffmpeg-clean.sh` 一样，删除已编译好的 `build_x86_64/x86_64-w64-mingw32/` 中的 .a/.so 库文件，删除 `build_x86_64_musicxx/packages/xxx-prefix` 文件夹
 - 如果编译出错，在容器内可以按错误提示去找 cmake 的日志文件记录，vim 查看
 - 编译完成后，产物输出到 `{容器内根目录}/output/`
 - 在真机，也就是容器外执行 `./copyoutput.sh` 即可复制输出文件出来
@@ -29,7 +29,8 @@
         - 然后编译出带 ffmpeg.exe 需要的符号表的 libmediaxx.dll
         - 接着回过头修改编译 ffmpeg.exe 的脚本，详见 full 分支的 git 修改记录，通过链接参数指定 libmediaxx 高优先级，链接器在 libmediaxx 内可以找到 ffmpeg.exe 所需的所有来自 libav 的符号，那么后续就只需要依赖 libmediaxx 一个，不会链接 libav/libsw 了
     - 修改了一些编译参数，如 ffmpeg 倾向性能优化编译，舍弃了一些体积缩减
-    - patch 修复 ffmpeg、libmpv 的一些问题、调整功能
+    - patch 修复 ffmpeg 的一些问题（`packages/ffmpeg-*.patch`，由 ffmpeg 的 `PATCH_COMMAND` 自动应用）
+    - mpv 侧的定制改由 mpv fork 分支承载（原 `packages/temp-mpv-mediaxx.patch` 已删除），因此 mpv 不要再加 `PATCH_COMMAND`
 
 ## Full 分支更新编译
 - 如果修改了 ffmpeg 版本，需要同步更新 `libmediaxx.dll`/`ffmpeg.exe`/`ffprobe.exe`的话，进入docker容器内：
@@ -48,6 +49,20 @@ vi ffprobe_undef.txt
     4. 修改 `packages/ffmpeg.cmake`，切换为编译出静态库`--disable-shared --enable-static`，重新编译`mediaxx-rebuild.sh` 包含`ffmpeg/ffprobe`所需所有来自`libav/libsw`符号的`libmediaxx.dll`
     5. 复制新的 `libmediaxx.dll` 到 `build_x86_64/prebuild_lib/`
     6. 修改 `packages/ffmpeg.cmake`，切换为编译出动态库，执行 `ffmpeg-rebuild.sh`，此时新生成的 `ffmpeg/ffprobe` 将不再依赖于 `libav/libsw`，而是依赖`libmediaxx.dll`
+
+## 体积 / 特性裁剪与产物体检
+- 为了让链接器能删掉更多无用代码段，构建侧做了这些：
+    - ffmpeg 静态库 + `--enable-lto=full`，mpv `-Db_lto=true`，各 CMake 包与 mediaxx 自身由 `toolchain.cmake.in` 的基础参数统一带 `-flto`：**全链路统一 full LTO**
+        - 不要再给 mediaxx 打开 `CMAKE_INTERPROCEDURAL_OPTIMIZATION`：Clang 的 CMake IPO 会追加 `-flto=thin`，与 ffmpeg/mpv/libplacebo 的 full LTO 对象混在同一次链接里会削弱跨模块 DCE（体积收益变小）
+        - 若想换成 thin（链接更快更省内存），要一起改：ffmpeg `--enable-lto=thin`、mpv `-Db_lto_mode=thin`、toolchain 基础参数 `-flto=thin`
+    - 导出符号由 `ffmpeg-help/libmpv-win(.| -full).def` + `--exclude-all-symbols` 精确控制，链接时带 `--gc-sections --icf=safe --lto-O3 --lto-CGO3`，最后 `llvm-strip --strip-all`
+
+- 产物体检：编译完成后在 `output/` 里执行 `./check-size.sh`（脚本随构建自动拷到 output/），会检查
+    - 文件大小与各段大小
+    - 依赖的 DLL 是否只有 Windows 系统 DLL（出现 `libc++.dll` / `libstdc++-6.dll` / `libwinpthread-1.dll` 等说明静态链接失效）
+    - 导出符号是否与 `def` 一致（缺失会导致 `GetProcAddress` 失败；多出说明符号控制失效）
+    - 退出码 0 = 正常，1 = 有问题，可直接放进 CI
+- 想进一步量化 ICF/GC 折叠效果（判断体积还能不能压），用 `-DLLD_FLAGS='--print-icf-sections --print-gc-sections'` 重新配置后重链，或在 `packages/mediaxx.cmake` 的 `CMAKE_SHARED_LINKER_FLAGS` 里临时追加 `-Wl,--print-icf-sections`
 
 # 其他
 - `/outdate-patch` 内是过期的patch，在新的依赖库版本已经不再需要

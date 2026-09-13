@@ -1,8 +1,14 @@
 ExternalProject_Add(mpv
     DEPENDS
         ffmpeg
-    # GIT_REPOSITORY https://github.com/mpv-player/mpv.git
-    # GIT_TAG v0.41.0
+        libass
+        libplacebo
+    # 源码说明：SOURCE_DIR 使用 ${SOURCE_LOCATION}（= SINGLE_SOURCE_LOCATION/mpv），
+    # 该目录必须是 mediaxx 的 mpv fork 分支（含 audio-frame-fft / audio_fft 等自研能力），
+    # 不要再给 mpv 加 PATCH_COMMAND —— 改动都已经在 fork 分支里了。
+    # 要求要点（fork 的 meson.build）：libass、libplacebo 为必选依赖。
+    # GIT_REPOSITORY https://github.com/coolight7/mpv.git
+    # GIT_TAG <fork 的分支或 commit>
     SOURCE_DIR ${SOURCE_LOCATION}
     UPDATE_COMMAND ""
     CONFIGURE_COMMAND ${EXEC} CONF=1 meson setup <BINARY_DIR> <SOURCE_DIR>
@@ -13,6 +19,9 @@ ExternalProject_Add(mpv
         -Dc_args='-Wno-error=int-conversion -ffunction-sections -fdata-sections'
         -Dbuildtype=release
         -Db_lto=true
+        # meson 的 b_lto_mode 只有 default / thin 两个取值，default 对 clang 就是 -flto（full LTO），
+        # 与 ffmpeg(--enable-lto=full)、各 CMake 包(toolchain 基础参数 -flto)保持一致；
+        # 想统一改 thin 时这里改成 thin
         -Db_lto_mode=default
         -Ddebug=false
         -Db_ndebug=true

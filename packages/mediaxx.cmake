@@ -11,7 +11,14 @@ ExternalProject_Add(mediaxx
         "-DCMAKE_INSTALL_PREFIX=${MINGW_INSTALL_PREFIX}"
         "-DCMAKE_FIND_ROOT_PATH=${MINGW_INSTALL_PREFIX}"
         -DBUILD_SHARED_LIBS=ON
-        -DCMAKE_INTERPROCEDURAL_OPTIMIZATION=ON
+        # LTO：统一用 full LTO（ffmpeg --enable-lto=full、mpv b_lto=true、CMake 包与
+        # mediaxx 自身的对象都由 toolchain.cmake 的 -flto 覆盖）。
+        # 这里刻意【不要】再打开 CMAKE_INTERPROCEDURAL_OPTIMIZATION：Clang 的 CMake IPO
+        # 会追加 -flto=thin，与 ffmpeg/mpv/libplacebo 的 full LTO 对象混在同一次链接里，
+        # 会削弱跨模块 DCE（体积收益变小）。
+        # 若以后想让链接更快/更省内存，请统一改 thin：
+        #   ffmpeg: --enable-lto=thin   mpv: -Db_lto_mode=thin
+        #   toolchain.cmake.in 的基础参数: -flto=thin（并配 -flto-jobs/--thinlto-jobs）
         -DSTATIC_LINK_FFMPEG=ON
         -DSTATIC_LINK_LIBMPV=ON
         -DEXPORT_ALL_SYMBOL=OFF
@@ -33,7 +40,11 @@ ExternalProject_Add_Step(mediaxx copy-binary
 
     COMMAND ${CMAKE_SOURCE_DIR}/clang_root/bin/llvm-strip --strip-all      ${CMAKE_SOURCE_DIR}/output/libmediaxx.dll
 
-    COMMENT "Copying ffmpeg binaries and manual"
+    # 产物体积/符号体检脚本（依赖 DLL、导出符号、段大小），用法见脚本头部注释
+    COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_SOURCE_DIR}/help/check-size.sh  ${CMAKE_SOURCE_DIR}/output/check-size.sh
+    COMMAND chmod 755 ${CMAKE_SOURCE_DIR}/output/check-size.sh
+
+    COMMENT "Copying libmediaxx.dll / import lib / check-size.sh"
 )
 
 # cleanup(mediaxx rename-lib-pkgconfig)
