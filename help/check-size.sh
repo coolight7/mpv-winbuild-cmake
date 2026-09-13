@@ -82,7 +82,7 @@ fi
 head1 "依赖检查（静态链接正确时应当只有 Windows 系统 DLL）"
 
 # 允许出现的系统 DLL（大小写不敏感；api-ms-win-* 为 Windows 的转发 DLL）
-SYSTEM_PATTERN='^(kernel32|kernelbase|ntdll|msvcrt|ucrtbase|api-ms-win-[a-z0-9-]+|user32|gdi32|gdiplus|advapi32|shell32|shlwapi|ole32|oleaut32|combase|ws2_32|bcrypt|bcryptprimitives|crypt32|secur32|iphlpapi|dnsapi|version|winmm|avrt|dwmapi|uxtheme|d3d11|dxgi|d3dcompiler_[0-9]+|d2d1|setupapi|cfgmgr32|powrprof|dbghelp|userenv|wldap32|comctl32|nvapi|nvcuda|mfplat|mfuuid|propsys|rpcrt4|wininet|urlmon|normaliz|wintrust|imm32|mpr|opengl32)\.dll$'
+SYSTEM_PATTERN='^(kernel32|kernelbase|ntdll|msvcrt|ucrtbase|shcore|api-ms-win-[a-z0-9-]+|user32|gdi32|gdiplus|advapi32|shell32|shlwapi|ole32|oleaut32|combase|ws2_32|bcrypt|bcryptprimitives|crypt32|secur32|iphlpapi|dnsapi|version|winmm|avrt|dwmapi|uxtheme|d3d11|dxgi|d3dcompiler_[0-9]+|d2d1|setupapi|cfgmgr32|powrprof|dbghelp|userenv|wldap32|comctl32|nvapi|nvcuda|mfplat|mfuuid|propsys|rpcrt4|wininet|urlmon|normaliz|wintrust|imm32|mpr|opengl32)\.dll$'
 
 awk '/DLL Name: /{ print $3 }' "$pe_dump" | sort -u > "$pe_dump.deps"
 total_deps="$(grep -c . "$pe_dump.deps" || true)"
