@@ -87,7 +87,7 @@ ExternalProject_Add(ffmpeg
         --extra-libs='${ffmpeg_extra_libs} -lm'
 
         --disable-gpl
-        # --enable-nonfree
+        --disable-nonfree
         --enable-version3
 
         --disable-debug
