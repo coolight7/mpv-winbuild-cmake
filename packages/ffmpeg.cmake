@@ -101,7 +101,6 @@ ExternalProject_Add(ffmpeg
         --enable-lto=full
         --enable-small
         --enable-optimizations
-        --optflags="-O3"
 
         --disable-gray
         --disable-swscale-alpha
