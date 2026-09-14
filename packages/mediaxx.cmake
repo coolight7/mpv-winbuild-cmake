@@ -24,7 +24,7 @@ ExternalProject_Add(mediaxx
         -DEXPORT_ALL_SYMBOL=OFF
         -DCMAKE_C_FLAGS=' -fvisibility=hidden -ffunction-sections -fdata-sections -flto'
         -DCMAKE_CXX_FLAGS=' -fvisibility=hidden -ffunction-sections -fdata-sections -flto'
-        -DCMAKE_SHARED_LINKER_FLAGS=' -flto -Wl,-O3 -Wl,--exclude-all-symbols -Wl,--gc-sections -Wl,--print-icf-sections -Wl,--print-gc-sections'
+        -DCMAKE_SHARED_LINKER_FLAGS=' -flto -Wl,-O3 -Wl,--exclude-all-symbols -Wl,--gc-sections'
     BUILD_COMMAND ${EXEC} LTO_JOB=1 PDB=1 ninja -C <BINARY_DIR>
     INSTALL_COMMAND ${EXEC} ninja -C <BINARY_DIR> install
     LOG_DOWNLOAD 1 LOG_UPDATE 1 LOG_CONFIGURE 1 LOG_BUILD 1 LOG_INSTALL 1
