@@ -3,7 +3,7 @@ ExternalProject_Add(ffmpeg
         angle-headers
         amf-headers
         avisynth-headers
-        ${nvcodec_headers}
+        nvcodec-headers
         bzip2
         lame # mp3 encoder
         lcms2
@@ -22,7 +22,7 @@ ExternalProject_Add(ffmpeg
         libvpx
         libwebp
         libzimg
-        libmysofa
+        # libmysofa
         libiconv
         fontconfig
         harfbuzz
@@ -36,9 +36,8 @@ ExternalProject_Add(ffmpeg
         xvidcore 
         libxml2
         libvpl
-        libopenmpt # 模块音乐格式解码
+        # libopenmpt # 模块音乐格式解码
         libjxl
-        shaderc
         libplacebo
         # libzvbi       # 用于解析电视信号帧之间空白间隔内的信息
         # libaribcaption # 解析、转换日本 ARIB STD-B24 标准字幕格式
@@ -47,10 +46,10 @@ ExternalProject_Add(ffmpeg
         dav1d
         # vapoursynth  # python 扩展视频处理
         ${ffmpeg_uavs3d}
-        ${ffmpeg_davs2}
+        # ${ffmpeg_davs2}
         rubberband
         libva
-        openal-soft
+        # openal-soft # ffmpeg 与 mpv 都已 disable openal，没有任何包链接它
         fribidi
         
         # libmpv 放一起可能可以提供 ffmpeg autodetect，然后再控制导出符号给 libmpv 链接共享 ---
@@ -62,7 +61,7 @@ ExternalProject_Add(ffmpeg
         # vapoursynth
         # libsdl2
     GIT_REPOSITORY https://github.com/FFmpeg/FFmpeg.git
-    GIT_TAG n8.0.2
+    GIT_TAG n9.0.1
     SOURCE_DIR ${SOURCE_LOCATION}
     GIT_CLONE_FLAGS "--sparse"
     GIT_CLONE_POST_COMMAND "sparse-checkout set --no-cone /* !tests/ref/fate"
@@ -89,8 +88,8 @@ ExternalProject_Add(ffmpeg
         --extra-ldexeflags='-L/home/coolight/program/media/mpv-winbuild-cmake/build_x86_64/prebuild_lib -lmediaxx'
         --extra-libs='${ffmpeg_extra_libs} -lm'
 
-        --enable-gpl
-        --enable-nonfree
+        --disable-gpl
+        --disable-nonfree
         --enable-version3
 
         --disable-debug
@@ -102,8 +101,8 @@ ExternalProject_Add(ffmpeg
         --enable-asm 
         --enable-inline-asm
         --enable-lto=full
+        --enable-small
         --enable-optimizations
-        # --enable-hardcoded-tables
 
         --disable-doc
         --disable-htmlpages
@@ -136,38 +135,23 @@ ExternalProject_Add(ffmpeg
         --enable-swresample
 
         --enable-hwaccels
+
+        --enable-indevs
+        --enable-outdevs
+        --disable-indev=libcdio,v4l2,android_camera,decklink,dshow,gdigrab,iec61883,kmsgrab,libdc1394,vfwcap,xcbgrab,fbdev
+        --disable-outdev=caca,fbdev,v4l2,avfoundation
+
         --enable-bsfs
 
-        # protocols
-        --disable-protocols
-        --disable-protocol=ffrtmphttp,rtmp,rtmps,rtmpt,rtmpts,rtp,srtp,libsrt,libssh 
-        --enable-protocol=async 
-        --enable-protocol=cache 
-        --enable-protocol=crypto 
-        --enable-protocol=data 
-        --enable-protocol=file 
-        --enable-protocol=ftp 
-        --enable-protocol=hls 
-        --enable-protocol=pipe 
-        --enable-protocol=http 
-        --enable-protocol=httpproxy 
-        --enable-protocol=https 
-        --enable-protocol=subfile 
-        --enable-protocol=tcp 
-        --enable-protocol=tls 
-        --enable-protocol=udp
-
-        # 启用图片相关的封装器
-        --enable-muxers
-
-        --enable-demuxers
-
+        --enable-parsers
+        
         --enable-decoders
-        --disable-decoder=libaom_av1
 
         --enable-encoders
 
-        --enable-parsers
+        --enable-muxers
+
+        --enable-demuxers
 
         --enable-filters
         --disable-filter=afftdn
@@ -175,16 +159,19 @@ ExternalProject_Add(ffmpeg
         --disable-filter=anlmdn
         --disable-filter=arnndn
 
-        --enable-indevs
-        --enable-outdevs
-        --disable-indev=libcdio,v4l2,android_camera,decklink,dshow,gdigrab,iec61883,kmsgrab,libdc1394,vfwcap,xcbgrab,fbdev
-        --disable-outdev=caca,fbdev,v4l2,avfoundation
+        # protocols
+        --disable-protocols
+        # --enable-protocol=android_content
+        --enable-protocol=async,cache,crypto,data,file,ftp,pipe,http,https,httpproxy,subfile,tcp,udp,tls
 
+        --disable-libmfx
         --disable-avisynth
         --disable-vapoursynth
         --disable-whisper
         --disable-libdvdnav
         --disable-libdvdread
+        --disable-libmodplug
+        --disable-libopenmpt
         --disable-libsrt
         --disable-libzvbi
         --disable-libssh
@@ -215,7 +202,6 @@ ExternalProject_Add(ffmpeg
         --enable-nvenc
         --disable-vulkan
         --disable-vulkan-static
-        --disable-libshaderc
         --disable-libplacebo
         --disable-dxva2
         --disable-openal
@@ -245,7 +231,7 @@ ExternalProject_Add(ffmpeg
         --enable-zlib
         --enable-bzlib
         --enable-lzma
-        ${ffmpeg_davs2_cmd}
+        # ${ffmpeg_davs2_cmd}
         ${ffmpeg_uavs3d_cmd}
     BUILD_COMMAND ${MAKE}
     INSTALL_COMMAND ${MAKE} install

@@ -1,4 +1,4 @@
-./mediaxx-help-clean.sh
+./mediaxx-clean.sh
 
 cd build_x86_64_full
 ninja mediaxx
