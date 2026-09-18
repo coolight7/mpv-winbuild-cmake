@@ -7,7 +7,7 @@ ExternalProject_Add(mpv
     # 该目录必须是 mediaxx 的 mpv fork 分支（含 audio-frame-fft / audio_fft 等自研能力），
     # 不要再给 mpv 加 PATCH_COMMAND —— 改动都已经在 fork 分支里了。
     # 要求要点（fork 的 meson.build）：libass、libplacebo 为必选依赖。
-    # GIT_REPOSITORY https://github.com/coolight7/mpv.git
+    GIT_REPOSITORY https://github.com/coolight7/mpv.git
     # GIT_TAG <fork 的分支或 commit>
     SOURCE_DIR ${SOURCE_LOCATION}
     UPDATE_COMMAND ""
