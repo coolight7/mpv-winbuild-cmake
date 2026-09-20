@@ -8,7 +8,7 @@ ExternalProject_Add(mpv
     # 不要再给 mpv 加 PATCH_COMMAND —— 改动都已经在 fork 分支里了。
     # 要求要点（fork 的 meson.build）：libass、libplacebo 为必选依赖。
     GIT_REPOSITORY https://github.com/coolight7/mpv.git
-    # GIT_TAG <fork 的分支或 commit>
+    GIT_TAG extend
     SOURCE_DIR ${SOURCE_LOCATION}
     UPDATE_COMMAND ""
     CONFIGURE_COMMAND ${EXEC} CONF=1 meson setup <BINARY_DIR> <SOURCE_DIR>

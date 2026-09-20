@@ -93,8 +93,8 @@ ExternalProject_Add(ffmpeg
         --enable-version3
 
         --disable-debug
-        --disable-shared
-        --enable-static
+        --enable-shared
+        --disable-static
         --enable-stripping
         --enable-runtime-cpudetect
         --enable-pic
@@ -146,6 +146,12 @@ ExternalProject_Add(ffmpeg
         --enable-parsers
         
         --enable-decoders
+        # aom 是按纯编码器构建的（packages/aom.cmake 里 -DCONFIG_AV1_DECODER=0），
+        # 安装目录里没有 aom/aom_decoder.h、aom/aomdx.h；
+        # 而 --enable-libaom 会连带打开 libaom 的解码器和编码器，
+        # 编译 libavcodec/libaomdec.c 时会因为找不到 aom_decoder.h 直接失败。
+        # AV1 解码已由 dav1d 提供，这里把 libaom 解码器关掉即可。
+        --disable-decoder=libaom_av1
 
         --enable-encoders
 
@@ -164,30 +170,27 @@ ExternalProject_Add(ffmpeg
         # --enable-protocol=android_content
         --enable-protocol=async,cache,crypto,data,file,ftp,pipe,http,https,httpproxy,subfile,tcp,udp,tls
 
-        --disable-libmfx
         --disable-avisynth
         --disable-vapoursynth
         --disable-whisper
         --disable-libdvdnav
         --disable-libdvdread
-        --disable-libmodplug
-        --disable-libopenmpt
         --disable-libsrt
         --disable-libzvbi
         --disable-libssh
         --disable-libmfx
         --disable-libaribcaption
-        
+        --disable-libxvid
+        --disable-libmodplug
+        --disable-libopenmpt
+
         --enable-libspeex
         --enable-libbluray
-        --enable-libxvid
         --enable-libmp3lame
         --enable-libsvtav1
         --enable-libaom
-        --enable-libmodplug
-        --enable-libopenmpt
-        --enable-libx264
-        --enable-libx265
+        # --enable-libx264
+        # --enable-libx265
 
         --enable-network
         --disable-amf
