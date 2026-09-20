@@ -160,8 +160,9 @@ ExternalProject_Add(ffmpeg
         --enable-filter=acompressor
         --enable-filter=alimiter
         --enable-filter=atrim
-        --enable-filter=aecho
         --enable-filter=acopy
+        --enable-filter=aecho
+        --enable-filter=afade
         --enable-filter=amovie
         --enable-filter=apulsator
         --enable-filter=bs2b
@@ -184,8 +185,7 @@ ExternalProject_Add(ffmpeg
         --enable-filter=sinc
         --enable-filter=sine
         --enable-filter=vibrato,tremolo
-        # D3D12 硬件滤镜（依赖 --enable-d3d12va，需 mingw-w64 头文件提供 ID3D12VideoProcessor/ID3D12VideoMotionEstimator）
-        --enable-filter=scale_d3d12,deinterlace_d3d12,mestimate_d3d12
+        --enable-filter=scale_d3d11,scale_d3d12,deinterlace_d3d12,mestimate_d3d12
 
         # protocols
         --disable-protocols
