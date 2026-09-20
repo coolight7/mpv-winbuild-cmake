@@ -46,9 +46,9 @@ vi ffmpeg_undef.txt
 vi ffprobe_undef.txt
 ```
 - 
-    4. 修改 `packages/ffmpeg.cmake`，切换为编译出静态库`--disable-shared --enable-static`，重新编译`mediaxx-rebuild.sh` 包含`ffmpeg/ffprobe`所需所有来自`libav/libsw`符号的`libmediaxx.dll`
+    4. 修改 `packages/ffmpeg.cmake`，切换为编译出静态库`--disable-shared --enable-static`，清理 ffmpeg `ffmpeg-clean.sh`、mpv `mpv-clean.sh`，重新编译`mediaxx-rebuild.sh` 包含`ffmpeg/ffprobe`所需所有来自`libav/libsw`符号的`libmediaxx.dll`
     5. 复制新的 `libmediaxx.dll` 到 `build_x86_64/prebuild_lib/`
-    6. 修改 `packages/ffmpeg.cmake`，切换为编译出动态库，执行 `ffmpeg-rebuild.sh`，此时新生成的 `ffmpeg/ffprobe` 将不再依赖于 `libav/libsw`，而是依赖`libmediaxx.dll`
+    6. 修改 `packages/ffmpeg.cmake`，切换为编译出动态库`--enable-shared --disable-static`，执行 `ffmpeg-rebuild.sh`，此时新生成的 `ffmpeg/ffprobe` 将不再依赖于 `libav/libsw`，而是依赖`libmediaxx.dll`
 
 ## 体积 / 特性裁剪与产物体检
 - 为了让链接器能删掉更多无用代码段，构建侧做了这些：
